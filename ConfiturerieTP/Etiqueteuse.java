@@ -1,10 +1,10 @@
 
-public class Valve {
+public class Etiqueteuse {
 
 	int _id;
 	boolean _dispo = true;
 	
-	public Valve (int id) {
+	public Etiqueteuse (int id) {
 		this._id = id;
 	}
 	
@@ -12,11 +12,11 @@ public class Valve {
 		return _dispo;
 	}
 	
-	public void OuvrirValve () {
+	public void CommencerEtiquetage () {
 		_dispo = false;
 	}
 	
-	public void FermerValve () {
+	public void TerminerEtiquetage () {
 		_dispo = true;
 	}
 }
