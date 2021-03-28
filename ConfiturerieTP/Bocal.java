@@ -16,7 +16,7 @@ public class Bocal {
 	
 	// Si la valve n'as pas ete set, return false
 	
-	public boolean RunRemplissage(int tempsSommeil) throws InterruptedException {
+	public boolean RunRemplissage(int tempsSommeil) {
 		
 		if (_valve == null || _etat != EtatBocal.VIDE) {
 			return false;
@@ -24,7 +24,11 @@ public class Bocal {
 		
 		Confiturerie.UI.AjouterTexte("Le bocal #" + this._id + " a commencer le remplissage avec la valve #" + _valve._id);
 		
-		Thread.sleep(tempsSommeil);
+		try {
+			Thread.sleep(tempsSommeil);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		
 		Confiturerie.UI.AjouterTexte("Le bocal #" + this._id + " a terminer le remplissage avec la valve #" + _valve._id);
 		
@@ -35,7 +39,7 @@ public class Bocal {
 	
 	// Si l'etiqueteuse n'as pas ete set, return false
 	
-	public boolean RunEtiquetage(int tempsSommeil) throws InterruptedException {
+	public boolean RunEtiquetage(int tempsSommeil) {
 		
 		if (_etiqueteuse == null || _etat != EtatBocal.REMPLIT) {
 			return false;
@@ -43,11 +47,17 @@ public class Bocal {
 		
 		Confiturerie.UI.AjouterTexte("Le bocal #" + this._id + " a commencer l'etiquetage avec l'etiqueteuse #" + _etiqueteuse._id);
 		
-		Thread.sleep(tempsSommeil);
+		try {
+			Thread.sleep(tempsSommeil);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		
 		Confiturerie.UI.AjouterTexte("Le bocal #" + this._id + " a terminer l'etiquetage avec l'etiqueteuse #" + _etiqueteuse._id);
 		
 		_etat = EtatBocal.ETIQUETTE;
+		
+		ControleEtiquetage._etiqueteuses.elementAt(_etiqueteuse._id - 1).TerminerEtiquetage();
 		
 		Confiturerie.UI.AjouterTexte("Le bocal " + this._id + " est pret !");
 		

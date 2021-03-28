@@ -11,8 +11,8 @@ public class Confiturerie {
 	int _nbEtiqueteuse = 0;
 	int _tempsSommeil = 0;
 	
-	ControleRemplissage _cRemplissage = new ControleRemplissage();
-	ControleEtiquetage _cEtiquetage = new ControleEtiquetage();
+	ControleRemplissage _cRemplissage = new ControleRemplissage(_nbValves);
+	ControleEtiquetage _cEtiquetage = new ControleEtiquetage(_nbEtiqueteuse);
 	
 	public Confiturerie (int nbBocaux, int nbValves, int nbEtiqueteuse, int tempsSommeil, InterfaceUtilisateur interfaceUtilisateur) {
 		
