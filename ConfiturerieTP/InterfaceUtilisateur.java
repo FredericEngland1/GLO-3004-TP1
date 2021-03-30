@@ -8,7 +8,7 @@ public class InterfaceUtilisateur {
 	int _nbEtiquette = 2;
 	int _tempsSomeil = 100;
 
-	Console _console;
+	Console _console = new Console();
 	
 	Confiturerie confiturerie;
 	

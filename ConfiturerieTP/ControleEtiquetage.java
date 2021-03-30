@@ -4,7 +4,7 @@ import java.util.Vector;
 
 public class ControleEtiquetage {
 	
-	public static Vector<Etiqueteuse> _etiqueteuses;
+	public static Vector<Etiqueteuse> _etiqueteuses = new Vector<Etiqueteuse>();
 	
 	public ControleEtiquetage (int nbEtiqueteuses) {
 		for (int i = 1; i <= nbEtiqueteuses; i++) {
@@ -18,13 +18,13 @@ public class ControleEtiquetage {
 		// qu'elles le soit toutes avant de les assigner
 		
 		while (true) {
-			ArrayList<Integer> etiqueteuseDispo = new ArrayList<Integer>();
+			ArrayList<Etiqueteuse> etiqueteusesDispo = new ArrayList<Etiqueteuse>();
 			
 			for (Etiqueteuse etiqueteuse : _etiqueteuses) {
-				if (etiqueteuse.Dispo()) etiqueteuseDispo.add(etiqueteuse._id);
+				if (etiqueteuse.Dispo()) etiqueteusesDispo.add(etiqueteuse);
 			}
 			
-			if (etiqueteuseDispo.size() != _etiqueteuses.size()) continue; 
+			if (etiqueteusesDispo.size() != _etiqueteuses.size()) continue; 
 			
 			for (TypeBocal type : TypeBocal.values()) {
 				LinkedList<Bocal> bocaux = Confiturerie._bocalPool._bocaux.get(type);
@@ -33,16 +33,24 @@ public class ControleEtiquetage {
 				
 				for (Bocal bocal : bocaux) {
 					if (bocal._etat == EtatBocal.REMPLIT) {
+						bocal.AttribueEtiqueteuse(etiqueteusesDispo.get(counter));
+						
 						counter++;
 						
-						Thread t = new Thread(() -> bocal.RunEtiquetage(100));
+						Thread t = new Thread(() -> bocal.RunEtiquetage(100)); // Changer le 100 par tempsSommeil
 					    t.start();
 						
-						if (counter == etiqueteuseDispo.size()) break; // TODO changer pour le nombre de bocaux max que l'on veux en meme temps, le nombre d'etiqueteuse dispo ?
+						if (counter == etiqueteusesDispo.size()) break; // TODO changer pour le nombre de bocaux max que l'on veux en meme temps, le nombre d'etiqueteuse dispo ?
 					}
 				}
 				
 				if (counter != 0) break; 
+			}
+			
+			try {
+				Thread.sleep(100); // Changer le 100 par tempsSommeil
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
 	}

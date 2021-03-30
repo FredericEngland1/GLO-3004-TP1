@@ -1,8 +1,7 @@
-
 public class Confiturerie {
 	
 	public static InterfaceUtilisateur UI;
-	static BocalPool _bocalPool = new BocalPool();
+	static BocalPool _bocalPool;
 	
 	boolean _pause = false;
 	
@@ -11,8 +10,8 @@ public class Confiturerie {
 	int _nbEtiqueteuse = 0;
 	int _tempsSommeil = 0;
 	
-	ControleRemplissage _cRemplissage = new ControleRemplissage(_nbValves);
-	ControleEtiquetage _cEtiquetage = new ControleEtiquetage(_nbEtiqueteuse);
+	ControleRemplissage _cRemplissage;
+	ControleEtiquetage _cEtiquetage;
 	
 	public Confiturerie (int nbBocaux, int nbValves, int nbEtiqueteuse, int tempsSommeil, InterfaceUtilisateur interfaceUtilisateur) {
 		
@@ -21,6 +20,16 @@ public class Confiturerie {
 		this._nbEtiqueteuse = nbEtiqueteuse;
 		this._tempsSommeil = tempsSommeil;
 		Confiturerie.UI = interfaceUtilisateur;
+		
+		this._cRemplissage = new ControleRemplissage(_nbValves);
+		this._cEtiquetage = new ControleEtiquetage(_nbEtiqueteuse);
+		Confiturerie._bocalPool = new BocalPool(3);
+		
+		Thread tr = new Thread(() -> _cRemplissage.Run()); // Changer le 100 par tempsSommeil
+		tr.start();
+	    
+		Thread te = new Thread(() -> _cEtiquetage.Run()); // Changer le 100 par tempsSommeil
+		te.start();
 		
 	}
 	
