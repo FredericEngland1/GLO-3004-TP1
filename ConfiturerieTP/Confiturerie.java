@@ -34,17 +34,21 @@ public class Confiturerie {
 
 		_ui = ui;
 
-		//TODO start the controller's threads
-		_cRemplissage = new ControleRemplissage(_nbrValve);
-		_cEtiquetage = new ControleEtiquetage(_nbrEtiquette);
-
-		//TODO start the bocal's threads
 		_bocaux = new Vector<Bocal>();
 		for (TypeBocal type : TypeBocal.typesBocaux()) {
 			for (int i = 1; i <= _nbrBocal; i++) {
 				_bocaux.add(new Bocal(i, type));
 			}
 		}
+
+		for (Bocal b : _bocaux)
+			_cRemplissage.AjouterBocal(b);
+
+		_cRemplissage = new ControleRemplissage(_nbrValve);
+		_cEtiquetage = new ControleEtiquetage(_nbrEtiquette);
+
+		new Thread(() -> _cRemplissage.Run()).start();
+		new Thread(() -> _cEtiquetage.Run()).start();
 	}
 
 	public static void ArretConfiturerie() {
@@ -88,9 +92,10 @@ public class Confiturerie {
 	}
 
 	public static void BocalPret(Bocal bocal) {
-		_bocaux.get(_bocaux.indexOf(bocal)).Reinitialiser();
+		int b = _bocaux.indexOf(bocal);
+		_bocaux.get(b).Reinitialiser();
 
-		//TODO restart the reseted bocal's thread
+		_cRemplissage.AjouterBocal(_bocaux.get(b));
 	}
 
 	public static synchronized void AjouterTexte(String ligne) {
