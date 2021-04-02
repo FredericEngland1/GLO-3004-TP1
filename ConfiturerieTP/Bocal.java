@@ -28,14 +28,12 @@ public class Bocal {
 		return _etat;
 	}
 
-	// Si la valve n'as pas ete set, return false
-	//TODO reviser l'acces au sommeil, l'appel aux methodes des valves et etiqueteuses
-	//TODO transformer le retour des methodes en void ?
-	//TODO s'assurer d'appeller Confiturerie.GetControleEtiquetage.AjouterBocal(b) apres le remplissage et .BocalPret(b) apres le remplissage
+	// Valve doit etre a false, donc avoir ete attribuer au bocal
+	
 	public boolean RunRemplissage(Valve valve) {
 		
-		if (valve == null) {
-			Confiturerie.AjouterTexte("ERREUR : Le bocal " + _type.toString() + "." + this._id + " ne c'est pas fait attribuer de valve !");
+		if (valve == null || valve.Dispo()) {
+			Confiturerie.AjouterTexte("ERREUR : Le bocal " + _type.toString() + "." + this._id + " ne c'est pas fait attribuer une valve valide !");
 			return false;
 		}
 		else if (_etat != EtatBocal.VIDE) {
@@ -43,26 +41,32 @@ public class Bocal {
 			return false;
 		}
 		
+		valve.OuvreValve();
+		
 		Confiturerie.AjouterTexte("Le bocal " + _type.toString() + "." + this._id + " a commencer le remplissage avec la valve #" + valve.GetID());
 		
 		try {
 			Thread.sleep(Confiturerie.GetTempsSommeil());
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-		}
+		}	
+		
+		_etat = EtatBocal.REMPLIT;
+		
+		valve.FermeValve();
 		
 		Confiturerie.AjouterTexte("Le bocal " + _type.toString() + "." + this._id + " a terminer le remplissage avec la valve #" + valve.GetID());
 		
-		_etat = EtatBocal.REMPLIT;
+		Confiturerie.GetCEtiquetage().AjouterBocal(this);
 		
 		return true;
 	}
 	
-	// Si l'etiqueteuse n'as pas ete set, return false
+	// Etiqueteuse doit etre a false, donc avoir ete attribuer au bocal
 	
 	public boolean RunEtiquetage(Etiqueteuse etiqueteuse) {
 		
-		if (etiqueteuse == null || _etat != EtatBocal.REMPLIT) {
+		if (etiqueteuse == null || etiqueteuse.Dispo()) {
 			Confiturerie.AjouterTexte("ERREUR : Le bocal " + _type.toString() + "." + this._id + " ne c'est pas fait attribuer d'etiqueteuse !");
 			return false;
 		}
@@ -70,6 +74,8 @@ public class Bocal {
 			Confiturerie.AjouterTexte("ERREUR : Le bocal " + _type.toString() + "." + this._id + " n'est pas REMPLIT !");
 			return false;
 		}
+		
+		etiqueteuse.CommenceEtiquetage();
 		
 		Confiturerie.AjouterTexte("Le bocal " + _type.toString() + "." + this._id + " a commencer l'etiquetage avec l'etiqueteuse #" + etiqueteuse.GetID());
 		
