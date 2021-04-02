@@ -1,10 +1,14 @@
 import org.jetbrains.annotations.Contract;
 
+import java.util.Vector;
+
 public class Confiturerie {
 
 	private Confiturerie() {
 		// classe statique, on ne permet pas l'acces au constructeur
 	}
+
+	private static Vector<Bocal> _bocaux;
 
 	private static int _nbrBocal;
 	private static int _nbrValve;
@@ -32,11 +36,17 @@ public class Confiturerie {
 
 		_ui = ui;
 
-		//TODO add the controllers
-		_cRemplissage = ;
-		_cEtiquetage = ;
+		//TODO start the controller's threads
+		_cRemplissage = new ControleRemplissage(_nbrValve);
+		_cEtiquetage = new ControleEtiquetage(_nbrEtiquette);
 
-		//TODO start running bocals
+		//TODO start the bocal's threads
+		_bocaux = new Vector<Bocal>();
+		for (TypeBocal type : TypeBocal.typesBocaux()) {
+			for (int i = 1; i <= _nbrBocal; i++) {
+				_bocaux.add(new Bocal(i, type));
+			}
+		}
 	}
 
 	public static void ArretConfiturerie() {
