@@ -1,14 +1,20 @@
 
 public class Etiqueteuse {
 
-	public Etiqueteuse() {
+	public Etiqueteuse(int id) {
+		_id	= id;
 		_dispo = true;
 	}
 
+	private int _id;
 	private boolean _dispo;
 
 	public synchronized boolean Dispo() {
 		return _dispo;
+	}
+
+	public int GetID() {
+		return _id;
 	}
 
 	public synchronized void RequeteEtiquetage() {

@@ -9,9 +9,9 @@ public class ControleRemplissage {
 		_bocauxDispo = new Hashtable<TypeBocal, Vector<Bocal>>();
 		//TODO initialiser les vector de bocaux pour chaque type de bocal
 
-		_valves = new Vector<Valve>(nbrValves);
-		for (Valve valve : _valves)
-			valve = new Valve();
+		_valves = new Vector<Valve>();
+		for (int i = 0; i < nbrValves; i++)
+			_valves.add(new Valve(i));
 
 		_ruptures = new Hashtable<TypeBocal, Boolean>();
 		//TODO initialiser les boolean pour chaque type de bocaux

@@ -9,9 +9,9 @@ public class ControleEtiquetage {
 		_bocauxDispo = new Hashtable<TypeBocal, Vector<Bocal>>();
 		//TODO initialiser les vector de bocaux pour chaque type de bocal
 
-		_etiqueteuses = new Vector<Etiqueteuse>(nbrEtiqueteuses);
-		for (Etiqueteuse etiqueteuse : _etiqueteuses)
-			etiqueteuse = new Etiqueteuse();
+		_etiqueteuses = new Vector<Etiqueteuse>();
+		for (int i = 0; i < nbrEtiqueteuses; i++)
+			_etiqueteuses.add(new Etiqueteuse(i));
 	}
 
 	private Vector<Etiqueteuse> _etiqueteuses;
