@@ -40,7 +40,7 @@ public class Bocal {
 		Confiturerie.AjouterTexte("Le bocal " + _type.toString() + "." + this._id + " a commencer le remplissage avec la valve #" + valve.GetID());
 		
 		try {
-			Thread.sleep(tempsSommeil);
+			Thread.sleep(Confiturerie.GetTempsSommeil());
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -68,7 +68,7 @@ public class Bocal {
 		Confiturerie.AjouterTexte("Le bocal " + _type.toString() + "." + this._id + " a commencer l'etiquetage avec l'etiqueteuse #" + etiqueteuse.GetID());
 		
 		try {
-			Thread.sleep(tempsSommeil);
+			Thread.sleep(Confiturerie.GetTempsSommeil());
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
