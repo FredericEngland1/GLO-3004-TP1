@@ -7,7 +7,7 @@ public class ControleEtiquetage {
 	
 	public ControleEtiquetage (int nbrEtiqueteuses) {
 		_bocauxDispo = new Hashtable<TypeBocal, Vector<Bocal>>();
-		//TODO initialiser les vector de bocaux pour chaque type de bocal
+		//TODO initialiser les vector de bocaux pour chaque type de bocal(J'ai creer une methode utile pour ca dans typeBocal)
 
 		_etiqueteuses = new Vector<Etiqueteuse>();
 		for (int i = 0; i < nbrEtiqueteuses; i++)

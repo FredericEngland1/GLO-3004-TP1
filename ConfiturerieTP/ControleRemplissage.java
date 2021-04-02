@@ -7,14 +7,14 @@ public class ControleRemplissage {
 	
 	public ControleRemplissage (int nbrValves) {
 		_bocauxDispo = new Hashtable<TypeBocal, Vector<Bocal>>();
-		//TODO initialiser les vector de bocaux pour chaque type de bocal
+		//TODO initialiser les vector de bocaux pour chaque type de bocal (J'ai creer une methode utile pour ca dans typeBocal)
 
 		_valves = new Vector<Valve>();
 		for (int i = 0; i < nbrValves; i++)
 			_valves.add(new Valve(i));
 
 		_ruptures = new Hashtable<TypeBocal, Boolean>();
-		//TODO initialiser les boolean pour chaque type de bocaux
+		//TODO initialiser les boolean pour chaque type de bocaux(J'ai creer une methode utile pour ca dans typeBocal)
 	}
 
 	private Vector<Valve> _valves;

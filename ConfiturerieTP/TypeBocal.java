@@ -3,7 +3,10 @@ public enum TypeBocal {
 	A,
 	B;
 
-	public TypeBocal[] typesBocaux() {
+	/*
+	* <brief> Methode qui retourne tous les type de bocaux possible.
+	 */
+	public static TypeBocal[] typesBocaux() {
 		return new TypeBocal[]{TypeBocal.A, TypeBocal.B};
 	}
 }
