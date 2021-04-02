@@ -1,5 +1,9 @@
 
 public enum TypeBocal {
 	A,
-	B
+	B;
+
+	public TypeBocal[] typesBocaux() {
+		return new TypeBocal[]{TypeBocal.A, TypeBocal.B};
+	}
 }
