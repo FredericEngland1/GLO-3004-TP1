@@ -12,6 +12,10 @@ public class Bocal {
 	private TypeBocal _type;
 	private EtatBocal _etat;
 
+	public void Reset() {
+		this._etat = EtatBocal.VIDE;
+	}
+
 	public int GetID() {
 		return _id;
 	}

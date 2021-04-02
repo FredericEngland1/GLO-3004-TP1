@@ -90,7 +90,9 @@ public class Confiturerie {
 	}
 
 	public static void BocalPret(Bocal bocal) {
-		//TODO implement
+		_bocaux.get(_bocaux.indexOf(bocal)).Reset();
+
+		//TODO restart the reseted bocal's thread
 	}
 
 	public static synchronized void AjouterTexte(String ligne) {
