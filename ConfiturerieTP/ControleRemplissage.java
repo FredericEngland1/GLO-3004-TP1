@@ -30,6 +30,8 @@ public class ControleRemplissage {
 	 *
 	 *  Il faut aussi tenir compte de la rupture
 	 *
+	 * 	C'est cette methode qui demarre le thread du bocal (comme ceci : "new Thread(() -> bocal.RunRemplissage(valve)).start();")
+	 *
 	 * */
 	public void Run () {
 		

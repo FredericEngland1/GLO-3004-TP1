@@ -24,6 +24,8 @@ public class ControleEtiquetage {
 	* 	etiqueteuse libre et assigner l'etiqueteuse au bocal en appelant la methode "RunEtiquetage(E)" du bocal comme un
 	*  	nouveau thread.
 	*
+	* 	C'est cette methode qui demarre le thread du bocal (comme ceci : "new Thread(() -> bocal.RunEtiquetage(Etiqueteuse)).start();")
+	*
 	* */
 	public void Run () {
 		

@@ -60,7 +60,7 @@ public class Confiturerie {
 	}
 
 	public static void Rupture(TypeBocal type) {
-		//TODO implement
+		_cRemplissage.Rupture(type);
 	}
 
 	public static boolean EstPause() {
