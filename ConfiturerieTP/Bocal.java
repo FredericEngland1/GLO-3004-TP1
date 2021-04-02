@@ -30,6 +30,8 @@ public class Bocal {
 
 	// Si la valve n'as pas ete set, return false
 	//TODO reviser l'acces au sommeil, l'appel aux methodes des valves et etiqueteuses
+	//TODO transformer le retour des methodes en void ?
+	//TODO s'assurer d'appeller Confiturerie.GetControleEtiquetage.AjouterBocal(b) apres le remplissage et .BocalPret(b) apres le remplissage
 	public boolean RunRemplissage(Valve valve) {
 		
 		if (valve == null) {
