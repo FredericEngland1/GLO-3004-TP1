@@ -1,6 +1,9 @@
 
 public class InterfaceUtilisateur {
-	
+
+	public InterfaceUtilisateur() {
+
+	}
 	// Valeurs par default
 	
 	int _nbBocaux = 2;
@@ -9,11 +12,9 @@ public class InterfaceUtilisateur {
 	int _tempsSomeil = 100;
 
 	Console _console = new Console();
-	
-	Confiturerie confiturerie;
-	
+
 	public void DebutConfiturerie () {
-		if (confiturerie == null) confiturerie = new Confiturerie(_nbBocaux, _nbValves, _nbEtiquette, _tempsSomeil, this);
+		Confiturerie.InitConfiturerie(_nbBocaux, _nbValves, _nbEtiquette, _tempsSomeil, this);
 	}
 	
 	public void ArretConfiturerie () {

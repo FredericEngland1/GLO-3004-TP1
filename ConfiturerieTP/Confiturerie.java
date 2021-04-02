@@ -2,14 +2,18 @@ import org.jetbrains.annotations.Contract;
 
 public class Confiturerie {
 
-	private static int _nbrBocal = 0;
-	private static int _nbrValve = 0;
-	private static int _nbrEtiquette = 0;
+	private Confiturerie() {
+		// classe statique, on ne permet pas l'acces au constructeur
+	}
 
-	private static int _tempsSommeil = 0;
+	private static int _nbrBocal;
+	private static int _nbrValve;
+	private static int _nbrEtiquette;
 
-	private static boolean _pause = true;
-	private static boolean _arret = true;
+	private static int _tempsSommeil;
+
+	private static boolean _pause;
+	private static boolean _arret;
 
 	private static InterfaceUtilisateur _ui;
 

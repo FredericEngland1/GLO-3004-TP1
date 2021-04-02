@@ -1,17 +1,36 @@
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Vector;
 
 public class ControleRemplissage {
+	
+	public ControleRemplissage (int nbrValves) {
+		_bocauxDispo = new Hashtable<TypeBocal, Vector<Bocal>>();
+		//TODO initialiser les vector de bocaux pour chaque type de bocal
 
-	public static Vector<Valve> _valves = new Vector<Valve>();
-	
-	public ControleRemplissage (int nbValves) {
-		for (int i = 1; i <= nbValves; i++) {
-			_valves.add(new Valve(i));
-		}
+		_valves = new Vector<Valve>(nbrValves);
+		for (Valve valve : _valves)
+			valve = new Valve();
+
+		_ruptures = new Hashtable<TypeBocal, Boolean>();
+		//TODO initialiser les boolean pour chaque type de bocaux
 	}
-	
+
+	private Vector<Valve> _valves;
+	private Hashtable<TypeBocal, Vector<Bocal>> _bocauxDispo;
+	private Hashtable<TypeBocal, Boolean> _ruptures; //Etrangement si on met "boolean" ca marche pas car cest un premitive type
+
+	/*
+	 * <Brief> Methode principale, run en thread, mais l'instance est unique. Elle doit tourner en boucle tant que la confiturerie
+	 * 	n'est pas en arret. Si la confiturerie est en pause il faut rester dans la boucle sans executer le code.
+	 * 	A chaque iteration il faut choisir le prochain bocal a faire passer en respectant les property du TP1 ainsi qu'une
+	 * 	valve libre et assigner la valve au bocal en appelant la methode "RunRemplissage(V)" du bocal comme un
+	 *  nouveau thread.
+	 *
+	 *  Il faut aussi tenir compte de la rupture
+	 *
+	 * */
 	public void Run () {
 		
 		// TODO System peut etre ameliorer, pas vraiment de raisons d'utiliser un arraylist pour les etiqueteuses dispo, puisqu'on attend
@@ -54,5 +73,20 @@ public class ControleRemplissage {
 			}
 		}
 	}
-	
+
+	/*
+	 * <Brief> Methode simple qui ajoute un bocal a sa liste de bocaux pret a etre etiquette
+	 * 	Il faut verifier le type du bocal pour l'ajouter au bon vector du hashTable
+	 */
+	public void AjouterBocal(Bocal bocal) {
+		//TODO implement
+	}
+
+	/*
+	* <Brief> Methode qui demarre une rupture pour une type de bocal. La rupture est gerer dans le Run.
+	* 	Cette methode s'occupe simplement de le notifier depuis la variable
+	 */
+	public void Rupture(TypeBocal type) {
+		//TODO implement
+	}
 }

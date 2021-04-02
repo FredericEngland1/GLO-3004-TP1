@@ -1,17 +1,30 @@
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Vector;
 
 public class ControleEtiquetage {
 	
-	public static Vector<Etiqueteuse> _etiqueteuses = new Vector<Etiqueteuse>();
-	
-	public ControleEtiquetage (int nbEtiqueteuses) {
-		for (int i = 1; i <= nbEtiqueteuses; i++) {
-			_etiqueteuses.add(new Etiqueteuse(i));
-		}
+	public ControleEtiquetage (int nbrEtiqueteuses) {
+		_bocauxDispo = new Hashtable<TypeBocal, Vector<Bocal>>();
+		//TODO initialiser les vector de bocaux pour chaque type de bocal
+
+		_etiqueteuses = new Vector<Etiqueteuse>(nbrEtiqueteuses);
+		for (Etiqueteuse etiqueteuse : _etiqueteuses)
+			etiqueteuse = new Etiqueteuse();
 	}
-	
+
+	private Vector<Etiqueteuse> _etiqueteuses;
+	private Hashtable<TypeBocal, Vector<Bocal>> _bocauxDispo;
+
+	/*
+	* <Brief> Methode principale, run en thread, mais l'instance est unique. Elle doit tourner en boucle tant que la confiturerie
+	* 	n'est pas en arret. Si la confiturerie est en pause il faut rester dans la boucle sans executer le code.
+	* 	A chaque iteration il faut choisir le prochain bocal a faire passer en respectant les property du TP1 ainsi qu'une
+	* 	etiqueteuse libre et assigner l'etiqueteuse au bocal en appelant la methode "RunEtiquetage(E)" du bocal comme un
+	*  	nouveau thread.
+	*
+	* */
 	public void Run () {
 		
 		// TODO System peut etre ameliorer, pas vraiment de raisons d'utiliser un arraylist pour les etiqueteuses dispo, puisqu'on attend
@@ -54,5 +67,12 @@ public class ControleEtiquetage {
 			}
 		}
 	}
-	
+
+	/*
+	* <Brief> Methode simple qui ajoute un bocal a sa liste de bocaux pret a etre etiquette
+	* 	Il faut verifier le type du bocal pour l'ajouter au bon vector du hashTable
+	 */
+	public void AjouterBocal(Bocal bocal) {
+		//TODO implement
+	}
 }

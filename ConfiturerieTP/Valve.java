@@ -1,22 +1,23 @@
 
 public class Valve {
 
-	int _id;
-	boolean _dispo = true;
-	
-	public Valve (int id) {
-		this._id = id;
+	public Valve() {
+		_dispo = true;
 	}
-	
-	public boolean Dispo () {
+
+	private boolean _dispo;
+
+	public synchronized boolean Dispo() {
 		return _dispo;
 	}
-	
-	public void OuvrirValve () {
+
+	public synchronized void RequeteValve() {
 		_dispo = false;
 	}
-	
-	public void FermerValve () {
+
+	public synchronized void OuvreValve() {}
+
+	public synchronized void FermeValve() {
 		_dispo = true;
 	}
 }

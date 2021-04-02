@@ -1,22 +1,23 @@
 
 public class Etiqueteuse {
 
-	int _id;
-	boolean _dispo = true;
-	
-	public Etiqueteuse (int id) {
-		this._id = id;
+	public Etiqueteuse() {
+		_dispo = true;
 	}
-	
-	public boolean Dispo () {
+
+	private boolean _dispo;
+
+	public synchronized boolean Dispo() {
 		return _dispo;
 	}
-	
-	public void CommencerEtiquetage () {
+
+	public synchronized void RequeteEtiquetage() {
 		_dispo = false;
 	}
 	
-	public void TerminerEtiquetage () {
+	public synchronized void CommenceEtiquetage() {}
+	
+	public synchronized void TermineEtiquetage() {
 		_dispo = true;
 	}
 }
