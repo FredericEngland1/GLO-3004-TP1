@@ -1,5 +1,3 @@
-import org.jetbrains.annotations.Contract;
-
 import java.util.Vector;
 
 public class Confiturerie {
@@ -90,7 +88,7 @@ public class Confiturerie {
 	}
 
 	public static void BocalPret(Bocal bocal) {
-		_bocaux.get(_bocaux.indexOf(bocal)).Reset();
+		_bocaux.get(_bocaux.indexOf(bocal)).Reinitialiser();
 
 		//TODO restart the reseted bocal's thread
 	}

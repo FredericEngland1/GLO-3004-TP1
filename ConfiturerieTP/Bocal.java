@@ -12,7 +12,7 @@ public class Bocal {
 	private TypeBocal _type;
 	private EtatBocal _etat;
 
-	public void Reset() {
+	public void Reinitialiser() {
 		this._etat = EtatBocal.VIDE;
 	}
 
