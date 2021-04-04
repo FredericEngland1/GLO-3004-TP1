@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.Vector;
 
 public class ControleRemplissage {
-	
+	private int nbValves;
 	public ControleRemplissage (int nbrValves) {
 		_bocauxDispo = new Hashtable<TypeBocal, Vector<Bocal>>();
 		//TODO initialiser les vector de bocaux pour chaque type de bocal (J'ai creer une methode utile pour ca dans typeBocal)
@@ -15,11 +15,16 @@ public class ControleRemplissage {
 
 		_ruptures = new Hashtable<TypeBocal, Boolean>();
 		//TODO initialiser les boolean pour chaque type de bocaux(J'ai creer une methode utile pour ca dans typeBocal)
+
+		this.nbValves = nbrValves;
 	}
 
 	private Vector<Valve> _valves;
 	private Hashtable<TypeBocal, Vector<Bocal>> _bocauxDispo;
 	private Hashtable<TypeBocal, Boolean> _ruptures; //Etrangement si on met "boolean" ca marche pas car cest un premitive type
+	boolean brupture = false;
+	boolean arupture = false;
+
 
 	/*
 	 * <Brief> Methode principale, run en thread, mais l'instance est unique. Elle doit tourner en boucle tant que la confiturerie
@@ -34,11 +39,224 @@ public class ControleRemplissage {
 	 *
 	 * */
 	public void Run () {
+
+		boolean tourTypeB = false;
+
+		while (!Confiturerie.EstArret()) {
+
+			if (Confiturerie.EstPause()) {
+				try {
+					Thread.sleep(Confiturerie.GetTempsSommeil());
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				continue;
+			}
+
+			ArrayList<Thread> threads = new ArrayList<Thread>();
+
+			if(brupture == false || arupture == false){
+				if (tourTypeB == false){
+					if (_bocauxDispo.get(A).isEmpty() || arupture == true){
+						int nbbocauxprets = _bocauxDispo.get(B).size();
+						int iv = 1;
+						while(nbbocauxprets > 0){
+							if (nbbocauxprets < nbValvesDispo){
+								iv = nbbocauxprets;
+							}
+							else {
+								iv = nbValvesDispo;
+							}
+							for (int i = (nbbocauxprets-1); i >= (nbbocauxprets-iv) && i >= 0; i--){
+								Thread t = new Thread(() -> _bocauxDispo.get(B).get(i).RunRemplissage());
+								t.start();
+								threads.add(t);
+								_bocauxDispo.remove(i)
+							}
+							for (Thread thread : threads) {
+								thread.join();
+							}
+							nbbocauxprets = nbbocauxprets-iv;
+						}
+					}
+					else if (arupture == false) {
+						int nbbocauxprets = _bocauxDispo.get(A).size();
+						int iv = 1;
+						while(nbbocauxprets > 0) {
+							if (nbbocauxprets < nbValvesDispo) {
+								iv = nbbocauxprets;
+							} else {
+								iv = nbValvesDispo;
+							}
+							for (int i = iv; i > -1; i--) {
+								Thread t = new Thread(() -> _bocauxDispo.get(A).get(i).RunRemplissage());
+								t.start();
+								threads.add(t);
+								_bocauxDispo.remove(i);
+							}
+							for (Thread thread : threads) {
+								thread.join();
+							}
+							tourTypeB = true;
+							nbbocauxprets = nbbocauxprets - iv;
+						}
+					}
+				}
+				else{
+					if (_bocauxDispo.get(B).isEmpty() || brupture == true){
+						int nbbocauxprets = _bocauxDispo.get(A).size();
+						int iv = 1;
+						while(nbbocauxprets > 0){
+							if (nbbocauxprets < nbValvesDispo){
+								iv = nbbocauxprets;
+							}
+							else {
+								iv = nbValvesDispo;
+							}
+							for (int i = iv; i > -1; i--){
+								Thread t = new Thread(() -> _bocauxDispo.get(A).get(i).RunRemplissage());
+								t.start();
+								threads.add(t);
+								_bocauxDispo.remove(i);
+							}
+							for (Thread thread : threads) {
+								thread.join();
+							}
+							nbbocauxprets = nbbocauxprets-iv;
+						}
+					}
+					else if (brupture == false){
+						int nbbocauxprets = _bocauxDispo.get(B).size();
+						int iv = 1;
+						while(nbbocauxprets > 0) {
+							if (nbbocauxprets < nbValvesDispo) {
+								iv = nbbocauxprets;
+							} else {
+								iv = nbValvesDispo;
+							}
+							for (int i = iv; i > -1; i--) {
+								Thread t = new Thread(() -> _bocauxDispo.get(B).get(i).RunRemplissage());
+								t.start();
+								threads.add(t);
+								_bocauxDispo.remove(i);
+							}
+							for (Thread thread : threads) {
+								thread.join();
+							}
+							tourTypeB = false;
+							nbbocauxprets = nbbocauxprets - iv;
+						}
+					}
+				}
+			}
+
+		}
+
+
+		/*while (true) {
+			boolean tourTypeB = false;
+			int nbValvesDispo = nbValves;
+			int compteur = 0;
+			for (Valve valve : _valves) {
+				if (valve.Dispo()) compteur++;
+			}
+			if (compteur != _valves.size()) {
+				Thread.sleep(Confiturerie.GetTempsSommeil());
+				continue;
+			}
+			else {
+				if(brupture == false || arupture == false){
+					if (tourTypeB == false){
+						if (_bocauxDispo.get(A).isEmpty() || arupture == true){
+							int nbbocauxprets = _bocauxDispo.get(B).size();
+							int iv = 1;
+							while(nbbocauxprets > 0){
+								if (nbbocauxprets < nbValvesDispo){
+									iv = nbbocauxprets;
+								}
+								else {
+									iv = nbValvesDispo;
+								}
+								for (int i = (nbbocauxprets-1); i >= (nbbocauxprets-iv) && i >= 0; i--){
+									Thread t = new Thread(() -> _bocauxDispo.get(B).get(i).RunRemplissage());
+									t.start();
+									_bocauxDispo.remove(i)
+								}
+								nbbocauxprets = nbbocauxprets-iv;
+							}
+						}
+						else if (arupture == false) {
+							int nbbocauxprets = _bocauxDispo.get(A).size();
+							int iv = 1;
+							while(nbbocauxprets > 0) {
+								if (nbbocauxprets < nbValvesDispo) {
+									iv = nbbocauxprets;
+								} else {
+									iv = nbValvesDispo;
+								}
+								for (int i = iv; i > -1; i--) {
+									Thread t = new Thread(() -> _bocauxDispo.get(A).get(i).RunRemplissage());
+									t.start();
+									_bocauxDispo.remove(i);
+								}
+								tourTypeB = true;
+								nbbocauxprets = nbbocauxprets - iv;
+							}
+						}
+					}
+					else{
+						if (_bocauxDispo.get(B).isEmpty() || brupture == true){
+							int nbbocauxprets = _bocauxDispo.get(A).size();
+							int iv = 1;
+							while(nbbocauxprets > 0){
+								if (nbbocauxprets < nbValvesDispo){
+									iv = nbbocauxprets;
+								}
+								else {
+									iv = nbValvesDispo;
+								}
+								for (int i = iv; i > -1; i--){
+									Thread t = new Thread(() -> _bocauxDispo.get(A).get(i).RunRemplissage());
+									t.start();
+									_bocauxDispo.remove(i);
+								}
+								nbbocauxprets = nbbocauxprets-iv;
+							}
+						}
+						else if (brupture == false){
+							int nbbocauxprets = _bocauxDispo.get(B).size();
+							int iv = 1;
+							while(nbbocauxprets > 0) {
+								if (nbbocauxprets < nbValvesDispo) {
+									iv = nbbocauxprets;
+								} else {
+									iv = nbValvesDispo;
+								}
+								for (int i = iv; i > -1; i--) {
+									Thread t = new Thread(() -> _bocauxDispo.get(B).get(i).RunRemplissage());
+									t.start();
+									_bocauxDispo.remove(i);
+								}
+								tourTypeB = false;
+								nbbocauxprets = nbbocauxprets - iv;
+							}
+						}
+					}
+				}
+
+			}
+
+
+			try {
+				Thread.sleep(100); // Changer le 100 par tempsSommeil
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
+
+		}*/
 		
-		// TODO System peut etre ameliorer, pas vraiment de raisons d'utiliser un arraylist pour les etiqueteuses dispo, puisqu'on attend
-		// qu'elles le soit toutes avant de les assigner
-		
-		while (true) {
+		/*while (true) {
 			ArrayList<Valve> valvesDispo = new ArrayList<Valve>();
 			
 			for (Valve valve : _valves) {
@@ -73,7 +291,7 @@ public class ControleRemplissage {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-		}
+		} */
 	}
 
 	/*
@@ -81,14 +299,38 @@ public class ControleRemplissage {
 	 * 	Il faut verifier le type du bocal pour l'ajouter au bon vector du hashTable
 	 */
 	public void AjouterBocal(Bocal bocal) {
-		//TODO implement
+		if (bocal.getType() == A){
+			_bocauxDispo.put(A, bocal);
+		}
+		if (bocal.getType() == B){
+			_bocauxDispo.put(B, bocal);
+		}
 	}
 
 	/*
 	* <Brief> Methode qui demarre une rupture pour une type de bocal. La rupture est gerer dans le Run.
 	* 	Cette methode s'occupe simplement de le notifier depuis la variable
-	 */
+	*/
 	public void Rupture(TypeBocal type) {
-		//TODO implement
+		if (type == A){
+			this.arupture = true;
+		}
+		if (type == B){
+			this.brupture = true;
+		}
+	}
+
+	/*
+	 * <Brief> Methode qui réaprovisionne et enlève une rupture pour une type de bocal. La rupture est gerer dans le Run.
+	 * 	Cette methode s'occupe simplement de le notifier depuis la variable
+	 */
+
+	public void Approvisionnement(TypeBocal type){
+			if (type == A){
+				this.arupture = false ;
+			}
+			if (type == B){
+				this.brupture = false;
+			}
 	}
 }

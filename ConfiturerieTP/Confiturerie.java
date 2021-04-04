@@ -49,6 +49,8 @@ public class Confiturerie {
 		_cRemplissage.Rupture(type);
 	}
 
+	public static void Approvisionnement(TypeBocal type) {_cRemplissage.Approvisionnement(type); }
+
 	public static boolean EstPause() {
 		return _pause;
 	}
