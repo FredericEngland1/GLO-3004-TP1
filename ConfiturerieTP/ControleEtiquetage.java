@@ -10,12 +10,16 @@ public class ControleEtiquetage {
 		//TODO initialiser les vector de bocaux pour chaque type de bocal(J'ai creer une methode utile pour ca dans typeBocal)
 
 		_etiqueteuses = new Vector<Etiqueteuse>();
-		for (int i = 0; i < nbrEtiqueteuses; i++)
+		for (int i = 0; i < nbrEtiqueteuses; i++) {
 			_etiqueteuses.add(new Etiqueteuse(i));
+		}
+
+		this.nbEtiqueteuses = nbrEtiqueteuses;
 	}
 
 	private Vector<Etiqueteuse> _etiqueteuses;
 	private Hashtable<TypeBocal, Vector<Bocal>> _bocauxDispo;
+	private int nbEtiqueteuses;
 
 	/*
 	* <Brief> Methode principale, run en thread, mais l'instance est unique. Elle doit tourner en boucle tant que la confiturerie
@@ -27,10 +31,12 @@ public class ControleEtiquetage {
 	* 	C'est cette methode qui demarre le thread du bocal (comme ceci : "new Thread(() -> bocal.RunEtiquetage(Etiqueteuse)).start();")
 	*
 	* */
-	public void Run () {
+	public void Run () throws InterruptedException {
 		boolean tourTypeB = false;
 
 		while (!Confiturerie.EstArret()) {
+
+			int nbEtiDispos = nbEtiqueteuses;
 
 			if (Confiturerie.EstPause()) {
 				try {
@@ -44,21 +50,22 @@ public class ControleEtiquetage {
 			ArrayList<Thread> threads = new ArrayList<Thread>();
 
 			if (tourTypeB == false){
-				if (_bocauxDispo.get(A).isEmpty()){
-					int nbbocauxprets = _bocauxDispo.get(B).size();
+				if (_bocauxDispo.get(TypeBocal.A).isEmpty()){
+					int nbbocauxprets = _bocauxDispo.get(TypeBocal.B).size();
 					int iv = 1;
 					while(nbbocauxprets > 0){
-						if (nbbocauxprets < nbValvesDispo){
+						if (nbbocauxprets < nbEtiDispos){
 							iv = nbbocauxprets;
 						}
 						else {
-							iv = nbValvesDispo;
+							iv = nbEtiDispos;
 						}
 						for (int i = (nbbocauxprets-1); i >= (nbbocauxprets-iv) && i >= 0; i--){
-							Thread t = new Thread(() -> _bocauxDispo.get(B).get(i).RunEtiquetage());
+							int finalI = i;
+							Thread t = new Thread(() -> _bocauxDispo.get(TypeBocal.B).get(finalI).RunEtiquetage());
 							t.start();
 							threads.add(t);
-							_bocauxDispo.remove(i)
+							_bocauxDispo.remove(i);
 						}
 						for (Thread thread : threads) {
 							thread.join();
@@ -67,16 +74,17 @@ public class ControleEtiquetage {
 					}
 				}
 				else {
-					int nbbocauxprets = _bocauxDispo.get(A).size();
+					int nbbocauxprets = _bocauxDispo.get(TypeBocal.A).size();
 					int iv = 1;
 					while(nbbocauxprets > 0) {
-						if (nbbocauxprets < nbValvesDispo) {
+						if (nbbocauxprets < nbEtiDispos) {
 							iv = nbbocauxprets;
 						} else {
-							iv = nbValvesDispo;
+							iv = nbEtiDispos;
 						}
 						for (int i = iv; i > -1; i--) {
-							Thread t = new Thread(() -> _bocauxDispo.get(A).get(i).RunEtiquetage());
+							int finalI = i;
+							Thread t = new Thread(() -> _bocauxDispo.get(TypeBocal.A).get(finalI).RunEtiquetage());
 							t.start();
 							threads.add(t);
 							_bocauxDispo.remove(i);
@@ -90,18 +98,19 @@ public class ControleEtiquetage {
 				}
 			}
 			else{
-				if (_bocauxDispo.get(B).isEmpty()){
-					int nbbocauxprets = _bocauxDispo.get(A).size();
+				if (_bocauxDispo.get(TypeBocal.B).isEmpty()){
+					int nbbocauxprets = _bocauxDispo.get(TypeBocal.A).size();
 					int iv = 1;
 					while(nbbocauxprets > 0){
-						if (nbbocauxprets < nbValvesDispo){
+						if (nbbocauxprets < nbEtiDispos){
 							iv = nbbocauxprets;
 						}
 						else {
-							iv = nbValvesDispo;
+							iv = nbEtiDispos;
 						}
 						for (int i = iv; i > -1; i--){
-							Thread t = new Thread(() -> _bocauxDispo.get(A).get(i).RunEtiquetage());
+							int finalI = i;
+							Thread t = new Thread(() -> _bocauxDispo.get(TypeBocal.A).get(finalI).RunEtiquetage());
 							t.start();
 							threads.add(t);
 							_bocauxDispo.remove(i);
@@ -113,16 +122,17 @@ public class ControleEtiquetage {
 					}
 				}
 				else {
-					int nbbocauxprets = _bocauxDispo.get(B).size();
+					int nbbocauxprets = _bocauxDispo.get(TypeBocal.B).size();
 					int iv = 1;
 					while(nbbocauxprets > 0) {
-						if (nbbocauxprets < nbValvesDispo) {
+						if (nbbocauxprets < nbEtiDispos) {
 							iv = nbbocauxprets;
 						} else {
-							iv = nbValvesDispo;
+							iv = nbEtiDispos;
 						}
 						for (int i = iv; i > -1; i--) {
-							Thread t = new Thread(() -> _bocauxDispo.get(B).get(i).RunEtiquetage());
+							int finalI = i;
+							Thread t = new Thread(() -> _bocauxDispo.get(TypeBocal.B).get(finalI).RunEtiquetage());
 							t.start();
 							threads.add(t);
 							_bocauxDispo.remove(i);
@@ -177,18 +187,17 @@ public class ControleEtiquetage {
 				e.printStackTrace();
 			}
 		}*/
-	}
 
 	/*
 	* <Brief> Methode simple qui ajoute un bocal a sa liste de bocaux pret a etre etiquette
 	* 	Il faut verifier le type du bocal pour l'ajouter au bon vector du hashTable
 	 */
 	public void AjouterBocal(Bocal bocal) {
-		if (bocal.getType() == A){
-			_bocauxDispo.put(A, bocal);
+		if (bocal.GetType() == TypeBocal.A){
+			_bocauxDispo.get(TypeBocal.A).add(bocal);
 		}
-		if (bocal.getType() == B){
-			_bocauxDispo.put(B, bocal);
+		if (bocal.GetType() == TypeBocal.B){
+			_bocauxDispo.get(TypeBocal.B).add(bocal);
 		}
 	}
 }

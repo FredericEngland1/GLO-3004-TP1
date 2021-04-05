@@ -33,8 +33,20 @@ public class Confiturerie {
 		_cRemplissage = new ControleRemplissage(nbrValve);
 		_cEtiquetage = new ControleEtiquetage(nbrEtiquette);
 
-		new Thread(() -> _cRemplissage.Run()).start();
-		new Thread(() -> _cEtiquetage.Run()).start();
+		new Thread(() -> {
+			try {
+				_cRemplissage.Run();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}).start();
+		new Thread(() -> {
+			try {
+				_cEtiquetage.Run();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}).start();
 	}
 
 	public static void ArretConfiturerie() {

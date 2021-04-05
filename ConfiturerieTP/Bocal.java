@@ -121,4 +121,33 @@ public class Bocal {
 		
 		return true;
 	}
+
+	public boolean RunEtiquetage() {
+
+
+		if (_etat != EtatBocal.REMPLIT) {
+			Confiturerie.AjouterTexte("ERREUR : Le bocal " + _type.toString() + "." + this._id + " n'est pas REMPLIT !");
+			return false;
+		}
+
+
+		Confiturerie.AjouterTexte("Le bocal " + _type.toString() + "." + this._id + " a commencé l'etiquetage");
+
+		try {
+			Thread.sleep(Confiturerie.GetTempsSommeil());
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		Confiturerie.AjouterTexte("Le bocal " + _type.toString() + "." + this._id + " a terminé l'etiquetage");
+
+		_etat = EtatBocal.ETIQUETTE;
+
+
+		Confiturerie.AjouterTexte("Le bocal " + _type.toString() + "." + this._id + " est pret !");
+
+		Confiturerie.BocalPret(this);
+
+		return true;
+	}
 }

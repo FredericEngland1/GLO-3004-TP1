@@ -38,11 +38,12 @@ public class ControleRemplissage {
 	 * 	C'est cette methode qui demarre le thread du bocal (comme ceci : "new Thread(() -> bocal.RunRemplissage(valve)).start();")
 	 *
 	 * */
-	public void Run () {
+	public void Run () throws InterruptedException {
 
 		boolean tourTypeB = false;
 
 		while (!Confiturerie.EstArret()) {
+			int nbValvesDispo = nbValves;
 
 			if (Confiturerie.EstPause()) {
 				try {
@@ -57,8 +58,8 @@ public class ControleRemplissage {
 
 			if(brupture == false || arupture == false){
 				if (tourTypeB == false){
-					if (_bocauxDispo.get(A).isEmpty() || arupture == true){
-						int nbbocauxprets = _bocauxDispo.get(B).size();
+					if (_bocauxDispo.get(TypeBocal.A).isEmpty() || arupture == true){
+						int nbbocauxprets = _bocauxDispo.get(TypeBocal.B).size();
 						int iv = 1;
 						while(nbbocauxprets > 0){
 							if (nbbocauxprets < nbValvesDispo){
@@ -68,10 +69,11 @@ public class ControleRemplissage {
 								iv = nbValvesDispo;
 							}
 							for (int i = (nbbocauxprets-1); i >= (nbbocauxprets-iv) && i >= 0; i--){
-								Thread t = new Thread(() -> _bocauxDispo.get(B).get(i).RunRemplissage());
+								int finalI = i;
+								Thread t = new Thread(() -> _bocauxDispo.get(TypeBocal.B).get(finalI).RunRemplissage());
 								t.start();
 								threads.add(t);
-								_bocauxDispo.remove(i)
+								_bocauxDispo.remove(i);
 							}
 							for (Thread thread : threads) {
 								thread.join();
@@ -80,7 +82,7 @@ public class ControleRemplissage {
 						}
 					}
 					else if (arupture == false) {
-						int nbbocauxprets = _bocauxDispo.get(A).size();
+						int nbbocauxprets = _bocauxDispo.get(TypeBocal.A).size();
 						int iv = 1;
 						while(nbbocauxprets > 0) {
 							if (nbbocauxprets < nbValvesDispo) {
@@ -89,7 +91,8 @@ public class ControleRemplissage {
 								iv = nbValvesDispo;
 							}
 							for (int i = iv; i > -1; i--) {
-								Thread t = new Thread(() -> _bocauxDispo.get(A).get(i).RunRemplissage());
+								int finalI = i;
+								Thread t = new Thread(() -> _bocauxDispo.get(TypeBocal.A).get(finalI).RunRemplissage());
 								t.start();
 								threads.add(t);
 								_bocauxDispo.remove(i);
@@ -103,8 +106,8 @@ public class ControleRemplissage {
 					}
 				}
 				else{
-					if (_bocauxDispo.get(B).isEmpty() || brupture == true){
-						int nbbocauxprets = _bocauxDispo.get(A).size();
+					if (_bocauxDispo.get(TypeBocal.B).isEmpty() || brupture == true){
+						int nbbocauxprets = _bocauxDispo.get(TypeBocal.A).size();
 						int iv = 1;
 						while(nbbocauxprets > 0){
 							if (nbbocauxprets < nbValvesDispo){
@@ -114,7 +117,8 @@ public class ControleRemplissage {
 								iv = nbValvesDispo;
 							}
 							for (int i = iv; i > -1; i--){
-								Thread t = new Thread(() -> _bocauxDispo.get(A).get(i).RunRemplissage());
+								int finalI = i;
+								Thread t = new Thread(() -> _bocauxDispo.get(TypeBocal.A).get(finalI).RunRemplissage());
 								t.start();
 								threads.add(t);
 								_bocauxDispo.remove(i);
@@ -126,7 +130,7 @@ public class ControleRemplissage {
 						}
 					}
 					else if (brupture == false){
-						int nbbocauxprets = _bocauxDispo.get(B).size();
+						int nbbocauxprets = _bocauxDispo.get(TypeBocal.B).size();
 						int iv = 1;
 						while(nbbocauxprets > 0) {
 							if (nbbocauxprets < nbValvesDispo) {
@@ -135,7 +139,8 @@ public class ControleRemplissage {
 								iv = nbValvesDispo;
 							}
 							for (int i = iv; i > -1; i--) {
-								Thread t = new Thread(() -> _bocauxDispo.get(B).get(i).RunRemplissage());
+								int finalI = i;
+								Thread t = new Thread(() -> _bocauxDispo.get(TypeBocal.B).get(finalI).RunRemplissage());
 								t.start();
 								threads.add(t);
 								_bocauxDispo.remove(i);
@@ -299,11 +304,11 @@ public class ControleRemplissage {
 	 * 	Il faut verifier le type du bocal pour l'ajouter au bon vector du hashTable
 	 */
 	public void AjouterBocal(Bocal bocal) {
-		if (bocal.getType() == A){
-			_bocauxDispo.put(A, bocal);
+		if (bocal.GetType() == TypeBocal.A){
+			_bocauxDispo.get(TypeBocal.A).add(bocal);
 		}
-		if (bocal.getType() == B){
-			_bocauxDispo.put(B, bocal);
+		if (bocal.GetType() == TypeBocal.B){
+			_bocauxDispo.get(TypeBocal.B).add(bocal);
 		}
 	}
 
@@ -312,10 +317,10 @@ public class ControleRemplissage {
 	* 	Cette methode s'occupe simplement de le notifier depuis la variable
 	*/
 	public void Rupture(TypeBocal type) {
-		if (type == A){
+		if (type == TypeBocal.A){
 			this.arupture = true;
 		}
-		if (type == B){
+		if (type == TypeBocal.B){
 			this.brupture = true;
 		}
 	}
@@ -326,10 +331,10 @@ public class ControleRemplissage {
 	 */
 
 	public void Approvisionnement(TypeBocal type){
-			if (type == A){
+			if (type == TypeBocal.A){
 				this.arupture = false ;
 			}
-			if (type == B){
+			if (type == TypeBocal.B){
 				this.brupture = false;
 			}
 	}
