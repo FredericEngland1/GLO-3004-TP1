@@ -24,8 +24,6 @@ public class ControleRemplissage {
 	private Vector<Valve> _valves;
 	private Hashtable<TypeBocal, Vector<Bocal>> _bocauxDispo;
 	private Hashtable<TypeBocal, Boolean> _ruptures; //Etrangement si on met "boolean" ca marche pas car cest un premitive type
-	boolean brupture = false;
-	boolean arupture = false;
 	private int _nbrValves;
 
 	/*
@@ -58,9 +56,9 @@ public class ControleRemplissage {
 
 			ArrayList<Thread> threads = new ArrayList<Thread>();
 
-			if(brupture == false || arupture == false){
-				if (tourTypeB == false){
-					if (_bocauxDispo.get(TypeBocal.A).isEmpty() || arupture == true){
+			if(!_ruptures.get(TypeBocal.B) || !_ruptures.get(TypeBocal.A)){
+				if (!tourTypeB){
+					if (_bocauxDispo.get(TypeBocal.A).isEmpty() || _ruptures.get(TypeBocal.A)){
 						int nbbocauxprets = _bocauxDispo.get(TypeBocal.B).size();
 						int iv = 1;
 						while(nbbocauxprets > 0){
@@ -83,15 +81,11 @@ public class ControleRemplissage {
 							nbbocauxprets = nbbocauxprets-iv;
 						}
 					}
-					else if (arupture == false) {
+					else if (!_ruptures.get(TypeBocal.A)) {
 						int nbbocauxprets = _bocauxDispo.get(TypeBocal.A).size();
 						int iv = 1;
 						while(nbbocauxprets > 0) {
-							if (nbbocauxprets < nbValvesDispo) {
-								iv = nbbocauxprets;
-							} else {
-								iv = nbValvesDispo;
-							}
+							iv = Math.min(nbbocauxprets, nbValvesDispo);
 							for (int i = iv; i > -1; i--) {
 								int finalI = i;
 								Thread t = new Thread(() -> _bocauxDispo.get(TypeBocal.A).get(finalI).RunRemplissage());
@@ -108,16 +102,11 @@ public class ControleRemplissage {
 					}
 				}
 				else{
-					if (_bocauxDispo.get(TypeBocal.B).isEmpty() || brupture == true){
+					if (_bocauxDispo.get(TypeBocal.B).isEmpty() || _ruptures.get(TypeBocal.B)){
 						int nbbocauxprets = _bocauxDispo.get(TypeBocal.A).size();
 						int iv = 1;
 						while(nbbocauxprets > 0){
-							if (nbbocauxprets < nbValvesDispo){
-								iv = nbbocauxprets;
-							}
-							else {
-								iv = nbValvesDispo;
-							}
+							iv = Math.min(nbbocauxprets, nbValvesDispo);
 							for (int i = iv; i > -1; i--){
 								int finalI = i;
 								Thread t = new Thread(() -> _bocauxDispo.get(TypeBocal.A).get(finalI).RunRemplissage());
@@ -131,15 +120,11 @@ public class ControleRemplissage {
 							nbbocauxprets = nbbocauxprets-iv;
 						}
 					}
-					else if (brupture == false){
+					else if (!_ruptures.get(TypeBocal.B)){
 						int nbbocauxprets = _bocauxDispo.get(TypeBocal.B).size();
 						int iv = 1;
 						while(nbbocauxprets > 0) {
-							if (nbbocauxprets < nbValvesDispo) {
-								iv = nbbocauxprets;
-							} else {
-								iv = nbValvesDispo;
-							}
+							iv = Math.min(nbbocauxprets, nbValvesDispo);
 							for (int i = iv; i > -1; i--) {
 								int finalI = i;
 								Thread t = new Thread(() -> _bocauxDispo.get(TypeBocal.B).get(finalI).RunRemplissage());
@@ -286,7 +271,7 @@ public class ControleRemplissage {
 						Thread t = new Thread(() -> bocal.RunRemplissage(100)); // Changer le 100 par tempsSommeil
 					    t.start();
 						
-						if (counter == valvesDispo.size()) break; // TODO changer pour le nombre de bocaux max que l'on veux en meme temps, le nombre d'etiqueteuse dispo ?
+						if (counter == valvesDispo.size()) break;
 					}
 				}
 				
