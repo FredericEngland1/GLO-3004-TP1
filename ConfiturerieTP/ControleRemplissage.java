@@ -314,12 +314,7 @@ public class ControleRemplissage {
 	* 	Cette methode s'occupe simplement de le notifier depuis la variable
 	*/
 	public void Rupture(TypeBocal type) {
-		if (type == TypeBocal.A){
-			this.arupture = true;
-		}
-		if (type == TypeBocal.B){
-			this.brupture = true;
-		}
+		_ruptures.put(type, true);
 	}
 
 	/*
@@ -328,11 +323,6 @@ public class ControleRemplissage {
 	 */
 
 	public void Approvisionnement(TypeBocal type){
-			if (type == TypeBocal.A){
-				this.arupture = false ;
-			}
-			if (type == TypeBocal.B){
-				this.brupture = false;
-			}
+		_ruptures.put(type, false);
 	}
 }
