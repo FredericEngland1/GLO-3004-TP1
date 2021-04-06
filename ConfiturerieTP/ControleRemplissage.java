@@ -3,6 +3,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 public class ControleRemplissage {
+
 	public ControleRemplissage (int nbrValves) {
 		_bocauxDispo = new Hashtable<TypeBocal, Vector<Bocal>>();
 		for (TypeBocal type : TypeBocal.typesBocaux()) {
