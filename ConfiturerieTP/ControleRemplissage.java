@@ -306,12 +306,7 @@ public class ControleRemplissage {
 	 * 	Il faut verifier le type du bocal pour l'ajouter au bon vector du hashTable
 	 */
 	public void AjouterBocal(Bocal bocal) {
-		if (bocal.GetType() == TypeBocal.A){
-			_bocauxDispo.get(TypeBocal.A).add(bocal);
-		}
-		if (bocal.GetType() == TypeBocal.B){
-			_bocauxDispo.get(TypeBocal.B).add(bocal);
-		}
+		_bocauxDispo.get(bocal.GetType()).add(bocal);
 	}
 
 	/*
