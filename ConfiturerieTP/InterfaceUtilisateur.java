@@ -33,10 +33,10 @@ public class InterfaceUtilisateur {
 		JLabel lblEtiquettes = new JLabel("Nombre d'étiquettes :");
 		JLabel lblSleepTime = new JLabel("Temps de sommeil :");
 
-		SpinnerModel modelBocaux = new SpinnerNumberModel(0,0,10,1);
-		SpinnerModel modelValves = new SpinnerNumberModel(0,0,10,1);
-		SpinnerModel modelEtiquettes = new SpinnerNumberModel(0,0,10,1);
-		SpinnerModel modelSleepTime = new SpinnerNumberModel(0,0,10,1);
+		SpinnerModel modelBocaux = new SpinnerNumberModel(_nbBocaux,0,1000,1);
+		SpinnerModel modelValves = new SpinnerNumberModel(_nbValves,0,1000,1);
+		SpinnerModel modelEtiquettes = new SpinnerNumberModel(_nbEtiquette,0,1000,1);
+		SpinnerModel modelSleepTime = new SpinnerNumberModel(_tempsSomeil,0,10000,100);
 
 		JSpinner spinnerBocaux = new JSpinner(modelBocaux);
 		JSpinner spinnerValves = new JSpinner(modelValves);
