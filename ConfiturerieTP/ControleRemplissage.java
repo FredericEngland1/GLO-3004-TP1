@@ -63,12 +63,7 @@ public class ControleRemplissage {
 						int nbbocauxprets = _bocauxDispo.get(TypeBocal.B).size();
 						int iv = 1;
 						while(nbbocauxprets > 0){
-							if (nbbocauxprets < nbValvesDispo){
-								iv = nbbocauxprets;
-							}
-							else {
-								iv = nbValvesDispo;
-							}
+							iv = Math.min(nbbocauxprets, nbValvesDispo);
 							for (int i = (nbbocauxprets-1); i >= (nbbocauxprets-iv) && i >= 0; i--){
 								int finalI = i;
 								Thread t = new Thread(() -> _bocauxDispo.get(TypeBocal.B).get(finalI).RunRemplissage());
