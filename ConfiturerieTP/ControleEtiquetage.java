@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.LinkedList;
 import java.util.Vector;
 
 public class ControleEtiquetage {
@@ -14,12 +13,12 @@ public class ControleEtiquetage {
 			_etiqueteuses.add(new Etiqueteuse(i));
 		}
 
-		this.nbEtiqueteuses = nbrEtiqueteuses;
+		this._nbrEtiqueteuses = nbrEtiqueteuses;
 	}
 
 	private Vector<Etiqueteuse> _etiqueteuses;
 	private Hashtable<TypeBocal, Vector<Bocal>> _bocauxDispo;
-	private int nbEtiqueteuses;
+	private int _nbrEtiqueteuses;
 
 	/*
 	* <Brief> Methode principale, run en thread, mais l'instance est unique. Elle doit tourner en boucle tant que la confiturerie
@@ -36,7 +35,7 @@ public class ControleEtiquetage {
 
 		while (!Confiturerie.EstArret()) {
 
-			int nbEtiDispos = nbEtiqueteuses;
+			int nbEtiDispos = _nbrEtiqueteuses;
 
 			if (Confiturerie.EstPause()) {
 				try {

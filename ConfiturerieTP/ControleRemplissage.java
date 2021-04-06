@@ -1,10 +1,8 @@
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.LinkedList;
 import java.util.Vector;
 
 public class ControleRemplissage {
-	private int nbValves;
 	public ControleRemplissage (int nbrValves) {
 		_bocauxDispo = new Hashtable<TypeBocal, Vector<Bocal>>();
 		//TODO initialiser les vector de bocaux pour chaque type de bocal (J'ai creer une methode utile pour ca dans typeBocal)
@@ -16,7 +14,7 @@ public class ControleRemplissage {
 		_ruptures = new Hashtable<TypeBocal, Boolean>();
 		//TODO initialiser les boolean pour chaque type de bocaux(J'ai creer une methode utile pour ca dans typeBocal)
 
-		this.nbValves = nbrValves;
+		this._nbrValves = nbrValves;
 	}
 
 	private Vector<Valve> _valves;
@@ -24,7 +22,7 @@ public class ControleRemplissage {
 	private Hashtable<TypeBocal, Boolean> _ruptures; //Etrangement si on met "boolean" ca marche pas car cest un premitive type
 	boolean brupture = false;
 	boolean arupture = false;
-
+	private int _nbrValves;
 
 	/*
 	 * <Brief> Methode principale, run en thread, mais l'instance est unique. Elle doit tourner en boucle tant que la confiturerie
@@ -43,7 +41,7 @@ public class ControleRemplissage {
 		boolean tourTypeB = false;
 
 		while (!Confiturerie.EstArret()) {
-			int nbValvesDispo = nbValves;
+			int nbValvesDispo = _nbrValves;
 
 			if (Confiturerie.EstPause()) {
 				try {
