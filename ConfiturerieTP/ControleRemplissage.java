@@ -46,12 +46,13 @@ public class ControleRemplissage {
 		while (!Confiturerie.EstArret()) {
 			int nbValvesDispo = _nbrValves;
 
+			try {
+				Thread.sleep(Confiturerie.GetTempsSommeil());
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
 			if (Confiturerie.EstPause()) {
-				try {
-					Thread.sleep(Confiturerie.GetTempsSommeil());
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
 				continue;
 			}
 
@@ -61,15 +62,17 @@ public class ControleRemplissage {
 				if (!tourTypeB){
 					if (_bocauxDispo.get(TypeBocal.A).isEmpty() || _ruptures.get(TypeBocal.A)){
 						int nbbocauxprets = _bocauxDispo.get(TypeBocal.B).size();
-						int iv = 1;
+						int iv;
 						while(nbbocauxprets > 0){
-							iv = Math.min(nbbocauxprets, nbValvesDispo);
+							iv = Math.min(nbbocauxprets, nbValvesDispo) - 1;
 							for (int i = (nbbocauxprets-1); i >= (nbbocauxprets-iv) && i >= 0; i--){
-								int finalI = i;
-								Thread t = new Thread(() -> _bocauxDispo.get(TypeBocal.B).get(finalI).RunRemplissage());
+
+								Bocal b = _bocauxDispo.get(TypeBocal.B).get(i);
+								Thread t = new Thread(() -> b.RunRemplissage());
+								
 								t.start();
 								threads.add(t);
-								_bocauxDispo.remove(i);
+								_bocauxDispo.get(TypeBocal.B).remove(i);
 							}
 							for (Thread thread : threads) {
 								thread.join();
@@ -79,15 +82,17 @@ public class ControleRemplissage {
 					}
 					else if (!_ruptures.get(TypeBocal.A)) {
 						int nbbocauxprets = _bocauxDispo.get(TypeBocal.A).size();
-						int iv = 1;
+						int iv;
 						while(nbbocauxprets > 0) {
-							iv = Math.min(nbbocauxprets, nbValvesDispo);
+							iv = Math.min(nbbocauxprets, nbValvesDispo) - 1;
 							for (int i = iv; i > -1; i--) {
-								int finalI = i;
-								Thread t = new Thread(() -> _bocauxDispo.get(TypeBocal.A).get(finalI).RunRemplissage());
+								
+								Bocal b = _bocauxDispo.get(TypeBocal.A).get(i);
+								Thread t = new Thread(() -> b.RunRemplissage());
+								
 								t.start();
 								threads.add(t);
-								_bocauxDispo.remove(i);
+								_bocauxDispo.get(TypeBocal.A).remove(i);
 							}
 							for (Thread thread : threads) {
 								thread.join();
@@ -100,15 +105,17 @@ public class ControleRemplissage {
 				else{
 					if (_bocauxDispo.get(TypeBocal.B).isEmpty() || _ruptures.get(TypeBocal.B)){
 						int nbbocauxprets = _bocauxDispo.get(TypeBocal.A).size();
-						int iv = 1;
+						int iv;
 						while(nbbocauxprets > 0){
-							iv = Math.min(nbbocauxprets, nbValvesDispo);
+							iv = Math.min(nbbocauxprets, nbValvesDispo) - 1;
 							for (int i = iv; i > -1; i--){
-								int finalI = i;
-								Thread t = new Thread(() -> _bocauxDispo.get(TypeBocal.A).get(finalI).RunRemplissage());
+								
+								Bocal b = _bocauxDispo.get(TypeBocal.A).get(i);
+								Thread t = new Thread(() -> b.RunRemplissage());
+								
 								t.start();
 								threads.add(t);
-								_bocauxDispo.remove(i);
+								_bocauxDispo.get(TypeBocal.A).remove(i);
 							}
 							for (Thread thread : threads) {
 								thread.join();
@@ -118,15 +125,17 @@ public class ControleRemplissage {
 					}
 					else if (!_ruptures.get(TypeBocal.B)){
 						int nbbocauxprets = _bocauxDispo.get(TypeBocal.B).size();
-						int iv = 1;
+						int iv;
 						while(nbbocauxprets > 0) {
-							iv = Math.min(nbbocauxprets, nbValvesDispo);
+							iv = Math.min(nbbocauxprets, nbValvesDispo) - 1;
 							for (int i = iv; i > -1; i--) {
-								int finalI = i;
-								Thread t = new Thread(() -> _bocauxDispo.get(TypeBocal.B).get(finalI).RunRemplissage());
+								
+								Bocal b = _bocauxDispo.get(TypeBocal.B).get(i);
+								Thread t = new Thread(() -> b.RunRemplissage());
+								
 								t.start();
 								threads.add(t);
-								_bocauxDispo.remove(i);
+								_bocauxDispo.get(TypeBocal.B).remove(i);
 							}
 							for (Thread thread : threads) {
 								thread.join();
