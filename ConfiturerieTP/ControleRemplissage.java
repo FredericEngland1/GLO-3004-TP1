@@ -5,14 +5,18 @@ import java.util.Vector;
 public class ControleRemplissage {
 	public ControleRemplissage (int nbrValves) {
 		_bocauxDispo = new Hashtable<TypeBocal, Vector<Bocal>>();
-		//TODO initialiser les vector de bocaux pour chaque type de bocal (J'ai creer une methode utile pour ca dans typeBocal)
+		for (TypeBocal type : TypeBocal.typesBocaux()) {
+			_bocauxDispo.put(type, new Vector<Bocal>());
+		}
 
 		_valves = new Vector<Valve>();
 		for (int i = 0; i < nbrValves; i++)
 			_valves.add(new Valve(i));
 
 		_ruptures = new Hashtable<TypeBocal, Boolean>();
-		//TODO initialiser les boolean pour chaque type de bocaux(J'ai creer une methode utile pour ca dans typeBocal)
+		for (TypeBocal type : TypeBocal.typesBocaux()) {
+			_ruptures.put(type, false);
+		}
 
 		this._nbrValves = nbrValves;
 	}
