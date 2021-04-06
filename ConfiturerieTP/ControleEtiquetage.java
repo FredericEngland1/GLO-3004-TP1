@@ -6,8 +6,9 @@ public class ControleEtiquetage {
 	
 	public ControleEtiquetage (int nbrEtiqueteuses) {
 		_bocauxDispo = new Hashtable<TypeBocal, Vector<Bocal>>();
-		//TODO initialiser les vector de bocaux pour chaque type de bocal(J'ai creer une methode utile pour ca dans typeBocal)
-
+		for (TypeBocal type : TypeBocal.typesBocaux()) {
+			_bocauxDispo.put(type, new Vector<Bocal>());
+		}
 		_etiqueteuses = new Vector<Etiqueteuse>();
 		for (int i = 0; i < nbrEtiqueteuses; i++) {
 			_etiqueteuses.add(new Etiqueteuse(i));
@@ -48,17 +49,12 @@ public class ControleEtiquetage {
 
 			ArrayList<Thread> threads = new ArrayList<Thread>();
 
-			if (tourTypeB == false){
+			if (!tourTypeB){
 				if (_bocauxDispo.get(TypeBocal.A).isEmpty()){
 					int nbbocauxprets = _bocauxDispo.get(TypeBocal.B).size();
 					int iv = 1;
 					while(nbbocauxprets > 0){
-						if (nbbocauxprets < nbEtiDispos){
-							iv = nbbocauxprets;
-						}
-						else {
-							iv = nbEtiDispos;
-						}
+						iv = Math.min(nbbocauxprets, nbEtiDispos);
 						for (int i = (nbbocauxprets-1); i >= (nbbocauxprets-iv) && i >= 0; i--){
 							int finalI = i;
 							Thread t = new Thread(() -> _bocauxDispo.get(TypeBocal.B).get(finalI).RunEtiquetage());
@@ -76,11 +72,7 @@ public class ControleEtiquetage {
 					int nbbocauxprets = _bocauxDispo.get(TypeBocal.A).size();
 					int iv = 1;
 					while(nbbocauxprets > 0) {
-						if (nbbocauxprets < nbEtiDispos) {
-							iv = nbbocauxprets;
-						} else {
-							iv = nbEtiDispos;
-						}
+						iv = Math.min(nbbocauxprets, nbEtiDispos);
 						for (int i = iv; i > -1; i--) {
 							int finalI = i;
 							Thread t = new Thread(() -> _bocauxDispo.get(TypeBocal.A).get(finalI).RunEtiquetage());
@@ -101,12 +93,7 @@ public class ControleEtiquetage {
 					int nbbocauxprets = _bocauxDispo.get(TypeBocal.A).size();
 					int iv = 1;
 					while(nbbocauxprets > 0){
-						if (nbbocauxprets < nbEtiDispos){
-							iv = nbbocauxprets;
-						}
-						else {
-							iv = nbEtiDispos;
-						}
+						iv = Math.min(nbbocauxprets, nbEtiDispos);
 						for (int i = iv; i > -1; i--){
 							int finalI = i;
 							Thread t = new Thread(() -> _bocauxDispo.get(TypeBocal.A).get(finalI).RunEtiquetage());
@@ -124,11 +111,7 @@ public class ControleEtiquetage {
 					int nbbocauxprets = _bocauxDispo.get(TypeBocal.B).size();
 					int iv = 1;
 					while(nbbocauxprets > 0) {
-						if (nbbocauxprets < nbEtiDispos) {
-							iv = nbbocauxprets;
-						} else {
-							iv = nbEtiDispos;
-						}
+						iv = Math.min(nbbocauxprets, nbEtiDispos);
 						for (int i = iv; i > -1; i--) {
 							int finalI = i;
 							Thread t = new Thread(() -> _bocauxDispo.get(TypeBocal.B).get(finalI).RunEtiquetage());
@@ -147,7 +130,7 @@ public class ControleEtiquetage {
 		}
 	}
 		
-		// TODO System peut etre ameliorer, pas vraiment de raisons d'utiliser un arraylist pour les etiqueteuses dispo, puisqu'on attend
+
 		// qu'elles le soit toutes avant de les assigner
 		
 		/*while (true) {
@@ -173,7 +156,7 @@ public class ControleEtiquetage {
 						Thread t = new Thread(() -> bocal.RunEtiquetage(100)); // Changer le 100 par tempsSommeil
 					    t.start();
 						
-						if (counter == etiqueteusesDispo.size()) break; // TODO changer pour le nombre de bocaux max que l'on veux en meme temps, le nombre d'etiqueteuse dispo ?
+						if (counter == etiqueteusesDispo.size()) break;
 					}
 				}
 				
@@ -192,11 +175,6 @@ public class ControleEtiquetage {
 	* 	Il faut verifier le type du bocal pour l'ajouter au bon vector du hashTable
 	 */
 	public void AjouterBocal(Bocal bocal) {
-		if (bocal.GetType() == TypeBocal.A){
-			_bocauxDispo.get(TypeBocal.A).add(bocal);
-		}
-		if (bocal.GetType() == TypeBocal.B){
-			_bocauxDispo.get(TypeBocal.B).add(bocal);
-		}
+		_bocauxDispo.get(bocal.GetType()).add(bocal);
 	}
 }
