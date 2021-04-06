@@ -30,11 +30,11 @@ public class Bocal {
 
 	// Valve doit etre a false, donc avoir ete attribuer au bocal
 
-	public boolean RunRemplissage() {
+	public void RunRemplissage() {
 
 		if (_etat != EtatBocal.VIDE) {
 			Confiturerie.AjouterTexte("ERREUR : Le bocal " + _type.toString() + "." + this._id + " n'est pas VIDE !");
-			return false;
+			return;
 		}
 
 		Confiturerie.AjouterTexte("Le bocal " + _type.toString() + "." + this._id + " a commencé le remplissage");
@@ -50,8 +50,6 @@ public class Bocal {
 		Confiturerie.AjouterTexte("Le bocal " + _type.toString() + "." + this._id + " a terminé le remplissage");
 
 		Confiturerie.GetCEtiquetage().AjouterBocal(this);
-
-		return true;
 	}
 	
 	public boolean RunRemplissage(Valve valve) {
@@ -122,12 +120,12 @@ public class Bocal {
 		return true;
 	}
 
-	public boolean RunEtiquetage() {
+	public void RunEtiquetage() {
 
 
 		if (_etat != EtatBocal.REMPLIT) {
 			Confiturerie.AjouterTexte("ERREUR : Le bocal " + _type.toString() + "." + this._id + " n'est pas REMPLIT !");
-			return false;
+			return;
 		}
 
 
@@ -147,7 +145,5 @@ public class Bocal {
 		Confiturerie.AjouterTexte("Le bocal " + _type.toString() + "." + this._id + " est pret !");
 
 		Confiturerie.BocalPret(this);
-
-		return true;
 	}
 }
