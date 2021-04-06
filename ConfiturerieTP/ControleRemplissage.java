@@ -3,29 +3,38 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 public class ControleRemplissage {
-
+	
 	public ControleRemplissage (int nbrValves) {
 		_bocauxDispo = new Hashtable<TypeBocal, Vector<Bocal>>();
-		for (TypeBocal type : TypeBocal.typesBocaux()) {
+		for (TypeBocal type : TypeBocal.values()) {
 			_bocauxDispo.put(type, new Vector<Bocal>());
 		}
 
-		_valves = new Vector<Valve>();
-		for (int i = 0; i < nbrValves; i++)
-			_valves.add(new Valve(i));
-
 		_ruptures = new Hashtable<TypeBocal, Boolean>();
-		for (TypeBocal type : TypeBocal.typesBocaux()) {
+		for (TypeBocal type : TypeBocal.values()) {
 			_ruptures.put(type, false);
 		}
 
 		this._nbrValves = nbrValves;
+		
+		_threads = new ArrayList<Thread>();
+		_bocauxCount = new Hashtable<TypeBocal, Integer>();
+		
+		for (TypeBocal type : TypeBocal.values()) {
+			_bocauxCount.put(type, 0);
+		}
+		
+		_currType = TypeBocal.A;
 	}
 
-	private Vector<Valve> _valves;
 	private Hashtable<TypeBocal, Vector<Bocal>> _bocauxDispo;
 	private Hashtable<TypeBocal, Boolean> _ruptures; //Etrangement si on met "boolean" ca marche pas car cest un premitive type
 	private int _nbrValves;
+	
+	private ArrayList<Thread> _threads;
+	private Hashtable<TypeBocal, Integer> _bocauxCount;
+	
+	private TypeBocal _currType;
 
 	/*
 	 * <Brief> Methode principale, run en thread, mais l'instance est unique. Elle doit tourner en boucle tant que la confiturerie
@@ -41,10 +50,7 @@ public class ControleRemplissage {
 	 * */
 	public void Run () throws InterruptedException {
 
-		boolean tourTypeB = false;
-
 		while (!Confiturerie.EstArret()) {
-			int nbValvesDispo = _nbrValves;
 
 			try {
 				Thread.sleep(Confiturerie.GetTempsSommeil());
@@ -56,239 +62,33 @@ public class ControleRemplissage {
 				continue;
 			}
 
-			ArrayList<Thread> threads = new ArrayList<Thread>();
-
-			if(!_ruptures.get(TypeBocal.B) || !_ruptures.get(TypeBocal.A)){
-				if (!tourTypeB){
-					if (_bocauxDispo.get(TypeBocal.A).isEmpty() || _ruptures.get(TypeBocal.A)){
-						int nbbocauxprets = _bocauxDispo.get(TypeBocal.B).size();
-						int iv;
-						while(nbbocauxprets > 0){
-							iv = Math.min(nbbocauxprets, nbValvesDispo) - 1;
-							for (int i = (nbbocauxprets-1); i >= (nbbocauxprets-iv) && i >= 0; i--){
-
-								Bocal b = _bocauxDispo.get(TypeBocal.B).get(i);
-								Thread t = new Thread(() -> b.RunRemplissage());
-								
-								t.start();
-								threads.add(t);
-								_bocauxDispo.get(TypeBocal.B).remove(i);
-							}
-							for (Thread thread : threads) {
-								thread.join();
-							}
-							nbbocauxprets = nbbocauxprets-iv;
-						}
-					}
-					else if (!_ruptures.get(TypeBocal.A)) {
-						int nbbocauxprets = _bocauxDispo.get(TypeBocal.A).size();
-						int iv;
-						while(nbbocauxprets > 0) {
-							iv = Math.min(nbbocauxprets, nbValvesDispo) - 1;
-							for (int i = iv; i > -1; i--) {
-								
-								Bocal b = _bocauxDispo.get(TypeBocal.A).get(i);
-								Thread t = new Thread(() -> b.RunRemplissage());
-								
-								t.start();
-								threads.add(t);
-								_bocauxDispo.get(TypeBocal.A).remove(i);
-							}
-							for (Thread thread : threads) {
-								thread.join();
-							}
-							tourTypeB = true;
-							nbbocauxprets = nbbocauxprets - iv;
-						}
-					}
+			if (_ruptures.get(_currType)) {
+				_currType = _currType.nextType();
+				for (Thread t : _threads) {
+					t.join();
 				}
-				else{
-					if (_bocauxDispo.get(TypeBocal.B).isEmpty() || _ruptures.get(TypeBocal.B)){
-						int nbbocauxprets = _bocauxDispo.get(TypeBocal.A).size();
-						int iv;
-						while(nbbocauxprets > 0){
-							iv = Math.min(nbbocauxprets, nbValvesDispo) - 1;
-							for (int i = iv; i > -1; i--){
-								
-								Bocal b = _bocauxDispo.get(TypeBocal.A).get(i);
-								Thread t = new Thread(() -> b.RunRemplissage());
-								
-								t.start();
-								threads.add(t);
-								_bocauxDispo.get(TypeBocal.A).remove(i);
-							}
-							for (Thread thread : threads) {
-								thread.join();
-							}
-							nbbocauxprets = nbbocauxprets-iv;
-						}
-					}
-					else if (!_ruptures.get(TypeBocal.B)){
-						int nbbocauxprets = _bocauxDispo.get(TypeBocal.B).size();
-						int iv;
-						while(nbbocauxprets > 0) {
-							iv = Math.min(nbbocauxprets, nbValvesDispo) - 1;
-							for (int i = iv; i > -1; i--) {
-								
-								Bocal b = _bocauxDispo.get(TypeBocal.B).get(i);
-								Thread t = new Thread(() -> b.RunRemplissage());
-								
-								t.start();
-								threads.add(t);
-								_bocauxDispo.get(TypeBocal.B).remove(i);
-							}
-							for (Thread thread : threads) {
-								thread.join();
-							}
-							tourTypeB = false;
-							nbbocauxprets = nbbocauxprets - iv;
-						}
-					}
-				}
-			}
-
-		}
-
-
-		/*while (true) {
-			boolean tourTypeB = false;
-			int nbValvesDispo = nbValves;
-			int compteur = 0;
-			for (Valve valve : _valves) {
-				if (valve.Dispo()) compteur++;
-			}
-			if (compteur != _valves.size()) {
-				Thread.sleep(Confiturerie.GetTempsSommeil());
+				_threads.clear();
 				continue;
 			}
-			else {
-				if(brupture == false || arupture == false){
-					if (tourTypeB == false){
-						if (_bocauxDispo.get(A).isEmpty() || arupture == true){
-							int nbbocauxprets = _bocauxDispo.get(B).size();
-							int iv = 1;
-							while(nbbocauxprets > 0){
-								if (nbbocauxprets < nbValvesDispo){
-									iv = nbbocauxprets;
-								}
-								else {
-									iv = nbValvesDispo;
-								}
-								for (int i = (nbbocauxprets-1); i >= (nbbocauxprets-iv) && i >= 0; i--){
-									Thread t = new Thread(() -> _bocauxDispo.get(B).get(i).RunRemplissage());
-									t.start();
-									_bocauxDispo.remove(i)
-								}
-								nbbocauxprets = nbbocauxprets-iv;
-							}
-						}
-						else if (arupture == false) {
-							int nbbocauxprets = _bocauxDispo.get(A).size();
-							int iv = 1;
-							while(nbbocauxprets > 0) {
-								if (nbbocauxprets < nbValvesDispo) {
-									iv = nbbocauxprets;
-								} else {
-									iv = nbValvesDispo;
-								}
-								for (int i = iv; i > -1; i--) {
-									Thread t = new Thread(() -> _bocauxDispo.get(A).get(i).RunRemplissage());
-									t.start();
-									_bocauxDispo.remove(i);
-								}
-								tourTypeB = true;
-								nbbocauxprets = nbbocauxprets - iv;
-							}
-						}
-					}
-					else{
-						if (_bocauxDispo.get(B).isEmpty() || brupture == true){
-							int nbbocauxprets = _bocauxDispo.get(A).size();
-							int iv = 1;
-							while(nbbocauxprets > 0){
-								if (nbbocauxprets < nbValvesDispo){
-									iv = nbbocauxprets;
-								}
-								else {
-									iv = nbValvesDispo;
-								}
-								for (int i = iv; i > -1; i--){
-									Thread t = new Thread(() -> _bocauxDispo.get(A).get(i).RunRemplissage());
-									t.start();
-									_bocauxDispo.remove(i);
-								}
-								nbbocauxprets = nbbocauxprets-iv;
-							}
-						}
-						else if (brupture == false){
-							int nbbocauxprets = _bocauxDispo.get(B).size();
-							int iv = 1;
-							while(nbbocauxprets > 0) {
-								if (nbbocauxprets < nbValvesDispo) {
-									iv = nbbocauxprets;
-								} else {
-									iv = nbValvesDispo;
-								}
-								for (int i = iv; i > -1; i--) {
-									Thread t = new Thread(() -> _bocauxDispo.get(B).get(i).RunRemplissage());
-									t.start();
-									_bocauxDispo.remove(i);
-								}
-								tourTypeB = false;
-								nbbocauxprets = nbbocauxprets - iv;
-							}
-						}
-					}
+			
+			if (_threads.size() == _nbrValves) {
+				_threads.get(0).join();
+				_threads.remove(0);
+				continue;
+			}
+			
+			Bocal b = .get(_currType);
+			
+			for (Bocal bocal : _bocauxDispo.get(_currType)) {
+				if (bocal.GetID() == _bocauxCount.get(_currType) + 1) {
+					
+					_bocauxCount.put(_currType, _bocauxCount.get(_currType)++);
 				}
-
-			}
-
-
-			try {
-				Thread.sleep(100); // Changer le 100 par tempsSommeil
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-
-
-		}*/
-		
-		/*while (true) {
-			ArrayList<Valve> valvesDispo = new ArrayList<Valve>();
-			
-			for (Valve valve : _valves) {
-				if (valve.Dispo()) valvesDispo.add(valve);
 			}
 			
-			if (valvesDispo.size() != _valves.size()) continue; 
-			
-			for (TypeBocal type : TypeBocal.values()) {
-				LinkedList<Bocal> bocaux = Confiturerie._bocalPool._bocaux.get(type);
-				
-				int counter = 0;
-				
-				for (Bocal bocal : bocaux) {
-					if (bocal._etat == EtatBocal.VIDE) {
-						bocal.AttribueValve(valvesDispo.get(counter));
-						
-						counter++;
-						
-						Thread t = new Thread(() -> bocal.RunRemplissage(100)); // Changer le 100 par tempsSommeil
-					    t.start();
-						
-						if (counter == valvesDispo.size()) break;
-					}
-				}
-				
-				if (counter != 0) break; 
-			}
-			
-			try {
-				Thread.sleep(100); // Changer le 100 par tempsSommeil
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		} */
+			_threads.add(new Thread(() -> b.RunRemplissage()));
+			_threads.get(_threads.size() - 1).start();
+		}
 	}
 
 	/*
