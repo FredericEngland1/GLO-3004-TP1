@@ -24,10 +24,10 @@ public class Confiturerie {
 
 		_ui = ui;
 
-		_cRemplissage = new ControleRemplissage(nbrValve);
+		_cRemplissage = new ControleRemplissage(nbrValve, nbrBocal);
 		_cEtiquetage = new ControleEtiquetage(nbrEtiquette);
 
-		for (TypeBocal type : TypeBocal.typesBocaux()) {
+		for (TypeBocal type : TypeBocal.values()) {
 			for (int i = 1; i <= nbrBocal; i++) {
 				_cRemplissage.AjouterBocal(new Bocal(i, type));
 			}

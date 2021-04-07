@@ -6,7 +6,7 @@ public class ControleEtiquetage {
 	
 	public ControleEtiquetage (int nbrEtiqueteuses) {
 		_bocauxDispo = new Hashtable<TypeBocal, Vector<Bocal>>();
-		for (TypeBocal type : TypeBocal.typesBocaux()) {
+		for (TypeBocal type : TypeBocal.values()) {
 			_bocauxDispo.put(type, new Vector<Bocal>());
 		}
 		_etiqueteuses = new Vector<Etiqueteuse>();

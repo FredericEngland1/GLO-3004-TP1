@@ -4,7 +4,7 @@ import java.util.Vector;
 
 public class ControleRemplissage {
 	
-	public ControleRemplissage (int nbrValves) {
+	public ControleRemplissage (int nbrValves, int nbrBocaux) {
 		_bocauxDispo = new Hashtable<TypeBocal, Vector<Bocal>>();
 		for (TypeBocal type : TypeBocal.values()) {
 			_bocauxDispo.put(type, new Vector<Bocal>());
@@ -18,23 +18,28 @@ public class ControleRemplissage {
 		this._nbrValves = nbrValves;
 		
 		_threads = new ArrayList<Thread>();
-		_bocauxCount = new Hashtable<TypeBocal, Integer>();
+		_bocalCourant = new Hashtable<TypeBocal, Integer>();
 		
 		for (TypeBocal type : TypeBocal.values()) {
-			_bocauxCount.put(type, 0);
+			_bocalCourant.put(type, 0);
 		}
 		
 		_currType = TypeBocal.A;
+		_bocauxEnvoyer = 0;
+		_nbrBocaux = nbrBocaux;
 	}
 
 	private Hashtable<TypeBocal, Vector<Bocal>> _bocauxDispo;
 	private Hashtable<TypeBocal, Boolean> _ruptures; //Etrangement si on met "boolean" ca marche pas car cest un premitive type
 	private int _nbrValves;
+	private int _nbrBocaux;
 	
 	private ArrayList<Thread> _threads;
-	private Hashtable<TypeBocal, Integer> _bocauxCount;
+	private Hashtable<TypeBocal, Integer> _bocalCourant;
 	
 	private TypeBocal _currType;
+	
+	private int _bocauxEnvoyer;
 
 	/*
 	 * <Brief> Methode principale, run en thread, mais l'instance est unique. Elle doit tourner en boucle tant que la confiturerie
@@ -63,11 +68,7 @@ public class ControleRemplissage {
 			}
 
 			if (_ruptures.get(_currType)) {
-				_currType = _currType.nextType();
-				for (Thread t : _threads) {
-					t.join();
-				}
-				_threads.clear();
+				nextType();
 				continue;
 			}
 			
@@ -77,20 +78,46 @@ public class ControleRemplissage {
 				continue;
 			}
 			
-			Bocal b = .get(_currType);
+			boolean _trouverBocal = false;
 			
 			for (Bocal bocal : _bocauxDispo.get(_currType)) {
-				if (bocal.GetID() == _bocauxCount.get(_currType) + 1) {
+				if (bocal.GetID() == _bocalCourant.get(_currType) + 1) {
 					
-					_bocauxCount.put(_currType, _bocauxCount.get(_currType)++);
+					_threads.add(new Thread(() -> bocal.RunRemplissage()));
+					_threads.get(_threads.size() - 1).start();
+					
+					_bocauxDispo.get(_currType).remove(bocal);
+					
+					_bocalCourant.put(_currType, (_bocalCourant.get(_currType) + 1) % _nbrBocaux);
+					_bocauxEnvoyer++;
+					
+					_trouverBocal = true;
+					
+					break;
 				}
 			}
 			
-			_threads.add(new Thread(() -> b.RunRemplissage()));
-			_threads.get(_threads.size() - 1).start();
+			if (!_trouverBocal) {
+				nextType();
+			}
+			
+			if (_bocauxEnvoyer == _nbrBocaux) {
+				nextType();
+			}
 		}
 	}
 
+	private void nextType () {
+		_currType = _currType.nextType();
+		for (Thread t : _threads) {
+			try {
+				t.join();
+			} catch (InterruptedException e) {}
+		}
+		_threads.clear();
+		_bocauxEnvoyer = 0;
+	}
+	
 	/*
 	 * <Brief> Methode simple qui ajoute un bocal a sa liste de bocaux pret a etre etiquette
 	 * 	Il faut verifier le type du bocal pour l'ajouter au bon vector du hashTable
