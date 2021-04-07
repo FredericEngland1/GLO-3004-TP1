@@ -15,6 +15,13 @@ public class InterfaceUtilisateur {
 	int _nbEtiquette = 2;
 	int _tempsSomeil = 100;
 
+	JButton btnCommencer;
+	JButton btnPause;
+	JButton btnRedemarrer;
+	JButton btnArret;
+	JButton btnMAJTempsSleep;
+	JButton btnRupture;
+	JButton btnApprovisionnement;
 	JComboBox comboBox;
 
 	Console _console = new Console();
@@ -64,13 +71,14 @@ public class InterfaceUtilisateur {
 			}
 		});
 
-		JButton btnCommencer = new JButton("Commencer la simulation");
-		JButton btnPause = new JButton("Pause");
-		JButton btnRedemarrer = new JButton("Redemarrer");
-		JButton btnArret = new JButton("Arret");
-		JButton btnMAJTempsSleep = new JButton("MAJ Temps Sommeil");
-		JButton btnRupture = new JButton("Rupture");
-		JLabel lblRupture = new JLabel("Type Rupture :");
+		btnCommencer = new JButton("Commencer la simulation");
+		btnPause = new JButton("Pause");
+		btnRedemarrer = new JButton("Redemarrer");
+		btnArret = new JButton("Arret");
+		btnMAJTempsSleep = new JButton("MAJ Temps Sommeil");
+		btnRupture = new JButton("Rupture");
+		btnApprovisionnement = new JButton("Approvisionnement");
+		JLabel lblRupture = new JLabel("Type :");
 		comboBox = new JComboBox(TypeBocal.values());
 
 		btnCommencer.addActionListener(new ActionListener() {
@@ -103,6 +111,9 @@ public class InterfaceUtilisateur {
 				Rupture();
 			}
 		});
+		btnApprovisionnement.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) { Approvisionnement(); }
+		});
 
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.gridx = 0;
@@ -133,6 +144,7 @@ public class InterfaceUtilisateur {
 		panelBtn.add(btnArret, constraints);
 		panelBtn.add(btnMAJTempsSleep, constraints);
 		panelBtn.add(btnRupture, constraints);
+		panelBtn.add(btnApprovisionnement, constraints);
 		panelBtn.add(lblRupture);
 		panelBtn.add(comboBox);
 
@@ -140,37 +152,72 @@ public class InterfaceUtilisateur {
 		frame.getContentPane().add(BorderLayout.CENTER, panelConsole);
 		frame.getContentPane().add(BorderLayout.SOUTH, panelBtn);
 
+		btnPause.setEnabled(false);
+		btnRedemarrer.setEnabled(false);
+		btnArret.setEnabled(false);
+		btnMAJTempsSleep.setEnabled(false);
+		btnRupture.setEnabled(false);
+		btnApprovisionnement.setEnabled(false);
+
 		frame.setVisible(true);
 	}
 
 	public void DebutConfiturerie () {
 		Confiturerie.InitConfiturerie(_nbBocaux, _nbValves, _nbEtiquette, _tempsSomeil, this);
 		AjouterTexte("Debut");
+
+		btnCommencer.setEnabled(false);
+		btnArret.setEnabled(true);
+
+		btnPause.setEnabled(true);
+		btnMAJTempsSleep.setEnabled(true);
+		btnRupture.setEnabled(true);
+		btnApprovisionnement.setEnabled(true);
 	}
 	
 	public void ArretConfiturerie () {
 		Confiturerie.ArretConfiturerie();
 		AjouterTexte("Arret");
+
+		btnCommencer.setEnabled(true);
+		btnArret.setEnabled(false);
+
+		btnPause.setEnabled(false);
+		btnRedemarrer.setEnabled(false);
+		btnMAJTempsSleep.setEnabled(false);
+		btnRupture.setEnabled(false);
+		btnApprovisionnement.setEnabled(false);
 	}
 	
 	public void MAJTempsSommeil () {
 		Confiturerie.MiseAJourTempsSommeil(_tempsSomeil);
 		AjouterTexte("Temps Sommeil : " + Integer.toString(_tempsSomeil));
 	}
-	
+
 	public void Rupture () {
 		Confiturerie.Rupture(TypeBocal.values()[comboBox.getSelectedIndex()]);
 		AjouterTexte("Rupture : " + TypeBocal.values()[comboBox.getSelectedIndex()].toString());
+	}
+
+	public void Approvisionnement () {
+		Confiturerie.Approvisionnement(TypeBocal.values()[comboBox.getSelectedIndex()]);
+		AjouterTexte("Approvisionnement : " + TypeBocal.values()[comboBox.getSelectedIndex()].toString());
 	}
 	
 	public void Pause () {
 		Confiturerie.Pause();
 		AjouterTexte("Pause");
+
+		btnRedemarrer.setEnabled(true);
+		btnPause.setEnabled(false);
 	}
 	
 	public void Redemarre () {
 		Confiturerie.Redemarre();
 		AjouterTexte("Redemarrage");
+
+		btnRedemarrer.setEnabled(false);
+		btnPause.setEnabled(true);
 	}
 	
 	// TODO changer le moment de l'affichage pour faire du sens
