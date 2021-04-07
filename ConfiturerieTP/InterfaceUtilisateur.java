@@ -30,7 +30,7 @@ public class InterfaceUtilisateur {
 
 		JLabel lblBocaux = new JLabel("Nombre de bocaux :");
 		JLabel lblValves = new JLabel("Nombre de valves :");
-		JLabel lblEtiquettes = new JLabel("Nombre d'étiquettes :");
+		JLabel lblEtiquettes = new JLabel("Nombre d'etiquettes :");
 		JLabel lblSleepTime = new JLabel("Temps de sommeil :");
 
 		SpinnerModel modelBocaux = new SpinnerNumberModel(_nbBocaux,0,1000,1);
@@ -66,8 +66,8 @@ public class InterfaceUtilisateur {
 
 		JButton btnCommencer = new JButton("Commencer la simulation");
 		JButton btnPause = new JButton("Pause");
-		JButton btnRedemarrer = new JButton("Redémarrer");
-		JButton btnArret = new JButton("Arrêt");
+		JButton btnRedemarrer = new JButton("Redemarrer");
+		JButton btnArret = new JButton("Arret");
 		JButton btnMAJTempsSleep = new JButton("MAJ Temps Sommeil");
 		JButton btnRupture = new JButton("Rupture");
 		JLabel lblRupture = new JLabel("Type Rupture :");
