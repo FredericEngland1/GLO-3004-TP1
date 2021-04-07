@@ -1,7 +1,8 @@
 
 public enum TypeBocal {
 	A,
-	B;
+	B,
+	C;
 
 	/*
 	* <brief> Methode qui retourne tous les type de bocaux possible.

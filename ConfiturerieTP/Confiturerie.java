@@ -25,7 +25,7 @@ public class Confiturerie {
 		_ui = ui;
 
 		_cRemplissage = new ControleRemplissage(nbrValve, nbrBocal);
-		_cEtiquetage = new ControleEtiquetage(nbrEtiquette);
+		_cEtiquetage = new ControleEtiquetage(nbrEtiquette, nbrBocal);
 
 		for (TypeBocal type : TypeBocal.values()) {
 			for (int i = 1; i <= nbrBocal; i++) {

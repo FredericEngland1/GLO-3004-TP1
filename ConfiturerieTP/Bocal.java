@@ -28,7 +28,6 @@ public class Bocal {
 		return _etat;
 	}
 
-	// Valve doit etre a false, donc avoir ete attribuer au bocal
 
 	public void RunRemplissage() {
 
@@ -37,7 +36,7 @@ public class Bocal {
 			return;
 		}
 
-		Confiturerie.AjouterTexte("Le bocal " + _type.toString() + "." + this._id + " a commencé le remplissage");
+		Confiturerie.AjouterTexte("Le bocal " + _type.toString() + "." + this._id + " a commence le remplissage");
 
 		try {
 			Thread.sleep(Confiturerie.GetTempsSommeil());
@@ -47,79 +46,11 @@ public class Bocal {
 
 		_etat = EtatBocal.REMPLIT;
 
-		Confiturerie.AjouterTexte("Le bocal " + _type.toString() + "." + this._id + " a terminé le remplissage");
+		Confiturerie.AjouterTexte("Le bocal " + _type.toString() + "." + this._id + " a termine le remplissage");
 
 		Confiturerie.GetCEtiquetage().AjouterBocal(this);
 	}
 	
-	public boolean RunRemplissage(Valve valve) {
-		
-		if (valve == null || valve.Dispo()) {
-			Confiturerie.AjouterTexte("ERREUR : Le bocal " + _type.toString() + "." + this._id + " ne s'est pas fait attribuer une valve valide !");
-			return false;
-		}
-		else if (_etat != EtatBocal.VIDE) {
-			Confiturerie.AjouterTexte("ERREUR : Le bocal " + _type.toString() + "." + this._id + " n'est pas VIDE !");
-			return false;
-		}
-		
-		valve.OuvreValve();
-		
-		Confiturerie.AjouterTexte("Le bocal " + _type.toString() + "." + this._id + " a commencé le remplissage avec la valve #" + valve.GetID());
-		
-		try {
-			Thread.sleep(Confiturerie.GetTempsSommeil());
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}	
-		
-		_etat = EtatBocal.REMPLIT;
-		
-		valve.FermeValve();
-		
-		Confiturerie.AjouterTexte("Le bocal " + _type.toString() + "." + this._id + " a terminé le remplissage avec la valve #" + valve.GetID());
-		
-		Confiturerie.GetCEtiquetage().AjouterBocal(this);
-		
-		return true;
-	}
-	
-	// Etiqueteuse doit etre a false, donc avoir ete attribuer au bocal
-	
-	public boolean RunEtiquetage(Etiqueteuse etiqueteuse) {
-		
-		if (etiqueteuse == null || etiqueteuse.Dispo()) {
-			Confiturerie.AjouterTexte("ERREUR : Le bocal " + _type.toString() + "." + this._id + " ne s'est pas fait attribuer d'etiqueteuse !");
-			return false;
-		}
-		else if (_etat != EtatBocal.REMPLIT) {
-			Confiturerie.AjouterTexte("ERREUR : Le bocal " + _type.toString() + "." + this._id + " n'est pas REMPLIT !");
-			return false;
-		}
-		
-		etiqueteuse.CommenceEtiquetage();
-		
-		Confiturerie.AjouterTexte("Le bocal " + _type.toString() + "." + this._id + " a commencé l'etiquetage avec l'etiqueteuse #" + etiqueteuse.GetID());
-		
-		try {
-			Thread.sleep(Confiturerie.GetTempsSommeil());
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
-		Confiturerie.AjouterTexte("Le bocal " + _type.toString() + "." + this._id + " a terminé l'etiquetage avec l'etiqueteuse #" + etiqueteuse.GetID());
-		
-		_etat = EtatBocal.ETIQUETTE;
-		
-		etiqueteuse.TermineEtiquetage();
-		
-		Confiturerie.AjouterTexte("Le bocal " + _type.toString() + "." + this._id + " est pret !");
-		
-		Confiturerie.BocalPret(this);
-		
-		return true;
-	}
-
 	public void RunEtiquetage() {
 
 
@@ -129,7 +60,7 @@ public class Bocal {
 		}
 
 
-		Confiturerie.AjouterTexte("Le bocal " + _type.toString() + "." + this._id + " a commencé l'etiquetage");
+		Confiturerie.AjouterTexte("Le bocal " + _type.toString() + "." + this._id + " a commence l'etiquetage");
 
 		try {
 			Thread.sleep(Confiturerie.GetTempsSommeil());
@@ -137,7 +68,7 @@ public class Bocal {
 			e.printStackTrace();
 		}
 
-		Confiturerie.AjouterTexte("Le bocal " + _type.toString() + "." + this._id + " a terminé l'etiquetage");
+		Confiturerie.AjouterTexte("Le bocal " + _type.toString() + "." + this._id + " a termine l'etiquetage");
 
 		_etat = EtatBocal.ETIQUETTE;
 

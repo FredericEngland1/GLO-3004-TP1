@@ -4,7 +4,7 @@ import java.util.Vector;
 
 public class ControleEtiquetage {
 	
-	public ControleEtiquetage (int nbrEtiqueteuses) {
+	public ControleEtiquetage (int nbrEtiqueteuses, int nbrBocaux) {
 		_bocauxDispo = new Hashtable<TypeBocal, Vector<Bocal>>();
 		for (TypeBocal type : TypeBocal.values()) {
 			_bocauxDispo.put(type, new Vector<Bocal>());
@@ -15,11 +15,30 @@ public class ControleEtiquetage {
 		}
 
 		this._nbrEtiqueteuses = nbrEtiqueteuses;
+		
+		_threads = new ArrayList<Thread>();
+		_bocalCourant = new Hashtable<TypeBocal, Integer>();
+		
+		for (TypeBocal type : TypeBocal.values()) {
+			_bocalCourant.put(type, 0);
+		}
+		
+		_currType = TypeBocal.A;
+		_bocauxEnvoyer = 0;
+		_nbrBocaux = nbrBocaux;
 	}
 
 	private Vector<Etiqueteuse> _etiqueteuses;
 	private Hashtable<TypeBocal, Vector<Bocal>> _bocauxDispo;
 	private int _nbrEtiqueteuses;
+	private int _nbrBocaux;
+	
+	private ArrayList<Thread> _threads;
+	private Hashtable<TypeBocal, Integer> _bocalCourant;
+	
+	private TypeBocal _currType;
+	
+	private int _bocauxEnvoyer;
 
 	/*
 	* <Brief> Methode principale, run en thread, mais l'instance est unique. Elle doit tourner en boucle tant que la confiturerie
@@ -32,144 +51,64 @@ public class ControleEtiquetage {
 	*
 	* */
 	public void Run () throws InterruptedException {
-		boolean tourTypeB = false;
-
 		while (!Confiturerie.EstArret()) {
 
-			int nbEtiDispos = _nbrEtiqueteuses;
-
-			if (Confiturerie.EstPause()) {
-				try {
-					Thread.sleep(Confiturerie.GetTempsSommeil());
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				continue;
-			}
-
-			ArrayList<Thread> threads = new ArrayList<Thread>();
-
-			if (!tourTypeB){
-				if (_bocauxDispo.get(TypeBocal.A).isEmpty()){
-					int nbbocauxprets = _bocauxDispo.get(TypeBocal.B).size();
-					int iv = 1;
-					while(nbbocauxprets > 0){
-						iv = Math.min(nbbocauxprets, nbEtiDispos);
-						for (int i = (nbbocauxprets-1); i >= (nbbocauxprets-iv) && i >= 0; i--){
-							int finalI = i;
-							Thread t = new Thread(() -> _bocauxDispo.get(TypeBocal.B).get(finalI).RunEtiquetage());
-							t.start();
-							threads.add(t);
-							_bocauxDispo.remove(i);
-						}
-						for (Thread thread : threads) {
-							thread.join();
-						}
-						nbbocauxprets = nbbocauxprets-iv;
-					}
-				}
-				else {
-					int nbbocauxprets = _bocauxDispo.get(TypeBocal.A).size();
-					int iv = 1;
-					while(nbbocauxprets > 0) {
-						iv = Math.min(nbbocauxprets, nbEtiDispos);
-						for (int i = iv; i > -1; i--) {
-							int finalI = i;
-							Thread t = new Thread(() -> _bocauxDispo.get(TypeBocal.A).get(finalI).RunEtiquetage());
-							t.start();
-							threads.add(t);
-							_bocauxDispo.remove(i);
-						}
-						for (Thread thread : threads) {
-							thread.join();
-						}
-						tourTypeB = true;
-						nbbocauxprets = nbbocauxprets - iv;
-					}
-				}
-			}
-			else{
-				if (_bocauxDispo.get(TypeBocal.B).isEmpty()){
-					int nbbocauxprets = _bocauxDispo.get(TypeBocal.A).size();
-					int iv = 1;
-					while(nbbocauxprets > 0){
-						iv = Math.min(nbbocauxprets, nbEtiDispos);
-						for (int i = iv; i > -1; i--){
-							int finalI = i;
-							Thread t = new Thread(() -> _bocauxDispo.get(TypeBocal.A).get(finalI).RunEtiquetage());
-							t.start();
-							threads.add(t);
-							_bocauxDispo.remove(i);
-						}
-						for (Thread thread : threads) {
-							thread.join();
-						}
-						nbbocauxprets = nbbocauxprets-iv;
-					}
-				}
-				else {
-					int nbbocauxprets = _bocauxDispo.get(TypeBocal.B).size();
-					int iv = 1;
-					while(nbbocauxprets > 0) {
-						iv = Math.min(nbbocauxprets, nbEtiDispos);
-						for (int i = iv; i > -1; i--) {
-							int finalI = i;
-							Thread t = new Thread(() -> _bocauxDispo.get(TypeBocal.B).get(finalI).RunEtiquetage());
-							t.start();
-							threads.add(t);
-							_bocauxDispo.remove(i);
-						}
-						for (Thread thread : threads) {
-							thread.join();
-						}
-						tourTypeB = false;
-						nbbocauxprets = nbbocauxprets - iv;
-					}
-				}
-			}
-		}
-	}
-		
-
-		// qu'elles le soit toutes avant de les assigner
-		
-		/*while (true) {
-			ArrayList<Etiqueteuse> etiqueteusesDispo = new ArrayList<Etiqueteuse>();
-			
-			for (Etiqueteuse etiqueteuse : _etiqueteuses) {
-				if (etiqueteuse.Dispo()) etiqueteusesDispo.add(etiqueteuse);
-			}
-			
-			if (etiqueteusesDispo.size() != _etiqueteuses.size()) continue; 
-			
-			for (TypeBocal type : TypeBocal.values()) {
-				LinkedList<Bocal> bocaux = Confiturerie._bocalPool._bocaux.get(type);
-				
-				int counter = 0;
-				
-				for (Bocal bocal : bocaux) {
-					if (bocal._etat == EtatBocal.REMPLIT) {
-						bocal.AttribueEtiqueteuse(etiqueteusesDispo.get(counter));
-						
-						counter++;
-						
-						Thread t = new Thread(() -> bocal.RunEtiquetage(100)); // Changer le 100 par tempsSommeil
-					    t.start();
-						
-						if (counter == etiqueteusesDispo.size()) break;
-					}
-				}
-				
-				if (counter != 0) break; 
-			}
-			
 			try {
-				Thread.sleep(100); // Changer le 100 par tempsSommeil
+				Thread.sleep(Confiturerie.GetTempsSommeil());
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-		}*/
-
+			
+			if (Confiturerie.EstPause()) {
+				continue;
+			}
+			
+			if (_threads.size() == _nbrEtiqueteuses) {
+				_threads.get(0).join();
+				_threads.remove(0);
+				continue;
+			}
+			
+			boolean _trouverBocal = false;
+			
+			for (Bocal bocal : _bocauxDispo.get(_currType)) {
+				if (bocal.GetID() == _bocalCourant.get(_currType) + 1) {
+					
+					_threads.add(new Thread(() -> bocal.RunEtiquetage()));
+					_threads.get(_threads.size() - 1).start();
+					
+					_bocauxDispo.get(_currType).remove(bocal);
+					
+					_bocalCourant.put(_currType, (_bocalCourant.get(_currType) + 1) % _nbrBocaux);
+					_bocauxEnvoyer++;
+					
+					_trouverBocal = true;
+					
+					break;
+				}
+			}
+			
+			if (!_trouverBocal) {
+				nextType();
+			}
+			
+			if (_bocauxEnvoyer == _nbrBocaux) {
+				nextType();
+			}
+		}
+	}
+	
+	private void nextType () {
+		_currType = _currType.nextType();
+		for (Thread t : _threads) {
+			try {
+				t.join();
+			} catch (InterruptedException e) {}
+		}
+		_threads.clear();
+		_bocauxEnvoyer = 0;
+	}
+	
 	/*
 	* <Brief> Methode simple qui ajoute un bocal a sa liste de bocaux pret a etre etiquette
 	* 	Il faut verifier le type du bocal pour l'ajouter au bon vector du hashTable
