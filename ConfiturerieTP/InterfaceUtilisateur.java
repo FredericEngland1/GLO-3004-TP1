@@ -24,7 +24,6 @@ public class InterfaceUtilisateur {
 	JButton btnApprovisionnement;
 	JComboBox comboBox;
 
-	Console _console = new Console();
 	TextArea textConsole;
 
 	public InterfaceUtilisateur() {
@@ -164,6 +163,7 @@ public class InterfaceUtilisateur {
 
 	public void DebutConfiturerie () {
 		Confiturerie.InitConfiturerie(_nbBocaux, _nbValves, _nbEtiquette, _tempsSomeil, this);
+		textConsole.setText("");
 		AjouterTexte("Debut");
 
 		btnCommencer.setEnabled(false);
@@ -220,10 +220,7 @@ public class InterfaceUtilisateur {
 		btnPause.setEnabled(true);
 	}
 	
-	// TODO changer le moment de l'affichage pour faire du sens
-	
 	public synchronized void AjouterTexte (String texte) {
-		_console.AjouterTexte(texte);
 		System.out.print(texte + "\n");
 		textConsole.append(texte + "\n");
 	}
