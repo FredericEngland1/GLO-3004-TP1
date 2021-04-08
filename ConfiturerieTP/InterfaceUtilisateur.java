@@ -225,10 +225,6 @@ public class InterfaceUtilisateur {
 	public synchronized void AjouterTexte (String texte) {
 		_console.AjouterTexte(texte);
 		System.out.print(texte + "\n");
-		this.AfficherTexte();
-	}
-
-	public void AfficherTexte(){
-		textConsole.setText(String.join("\n", _console.GetContent()));
+		textConsole.append(texte + "\n");
 	}
 }
