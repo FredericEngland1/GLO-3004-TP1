@@ -49,26 +49,10 @@ public class InterfaceUtilisateur {
 		JSpinner spinnerEtiquettes = new JSpinner(modelEtiquettes);
 		JSpinner spinnerSleepTime = new JSpinner(modelSleepTime);
 
-		spinnerBocaux.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				_nbBocaux = (int)((JSpinner)e.getSource()).getValue();
-			}
-		});
-		spinnerValves.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				_nbValves = (int)((JSpinner)e.getSource()).getValue();
-			}
-		});
-		spinnerEtiquettes.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				_nbEtiquette = (int)((JSpinner)e.getSource()).getValue();
-			}
-		});
-		spinnerSleepTime.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				_tempsSomeil = (int)((JSpinner)e.getSource()).getValue();
-			}
-		});
+		spinnerBocaux.addChangeListener(e -> _nbBocaux = (int)((JSpinner)e.getSource()).getValue());
+		spinnerValves.addChangeListener(e -> _nbValves = (int)((JSpinner)e.getSource()).getValue());
+		spinnerEtiquettes.addChangeListener(e -> _nbEtiquette = (int)((JSpinner)e.getSource()).getValue());
+		spinnerSleepTime.addChangeListener(e -> _tempsSomeil = (int)((JSpinner)e.getSource()).getValue());
 
 		btnCommencer = new JButton("Commencer la simulation");
 		btnPause = new JButton("Pause");
@@ -80,39 +64,13 @@ public class InterfaceUtilisateur {
 		JLabel lblRupture = new JLabel("Type :");
 		comboBox = new JComboBox(TypeBocal.values());
 
-		btnCommencer.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				DebutConfiturerie();
-			}
-		});
-		btnPause.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Pause();
-			}
-		});
-		btnRedemarrer.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Redemarre();
-			}
-		});
-		btnArret.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				ArretConfiturerie();
-			}
-		});
-		btnMAJTempsSleep.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				MAJTempsSommeil();
-			}
-		});
-		btnRupture.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Rupture();
-			}
-		});
-		btnApprovisionnement.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) { Approvisionnement(); }
-		});
+		btnCommencer.addActionListener(e -> DebutConfiturerie());
+		btnPause.addActionListener(e -> Pause());
+		btnRedemarrer.addActionListener(e -> Redemarre());
+		btnArret.addActionListener(e -> ArretConfiturerie());
+		btnMAJTempsSleep.addActionListener(e -> MAJTempsSommeil());
+		btnRupture.addActionListener(e -> Rupture());
+		btnApprovisionnement.addActionListener(e -> Approvisionnement());
 
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.gridx = 0;
