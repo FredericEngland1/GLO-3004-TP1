@@ -65,11 +65,12 @@ public class ControleEtiquetage {
 			}
 			
 			boolean _trouverBocal = false;
-			
-			for (Bocal bocal : _bocauxDispo.get(_currType)) {
+
+			Vector<Bocal> bocauxClone = (Vector<Bocal>) _bocauxDispo.get(_currType).clone();
+			for (Bocal bocal : bocauxClone) {
 				if (bocal.GetID() == _bocalCourant.get(_currType) + 1) {
 					
-					_threads.add(new Thread(() -> bocal.RunEtiquetage()));
+					_threads.add(new Thread(bocal::RunEtiquetage));
 					_threads.get(_threads.size() - 1).start();
 					
 					_bocauxDispo.get(_currType).remove(bocal);

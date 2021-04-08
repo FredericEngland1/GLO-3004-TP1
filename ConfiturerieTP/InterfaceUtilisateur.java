@@ -10,21 +10,21 @@ public class InterfaceUtilisateur {
 
 	// Valeurs par default
 
-	int _nbBocaux = 2;
-	int _nbValves = 2;
-	int _nbEtiquette = 2;
-	int _tempsSomeil = 100;
+	private int _nbBocaux = 2;
+	private int _nbValves = 2;
+	private int _nbEtiquette = 2;
+	private int _tempsSomeil = 1000;
 
-	JButton btnCommencer;
-	JButton btnPause;
-	JButton btnRedemarrer;
-	JButton btnArret;
-	JButton btnMAJTempsSleep;
-	JButton btnRupture;
-	JButton btnApprovisionnement;
-	JComboBox comboBox;
+	private JButton btnCommencer;
+	private JButton btnPause;
+	private JButton btnRedemarrer;
+	private JButton btnArret;
+	private JButton btnMAJTempsSleep;
+	private JButton btnRupture;
+	private JButton btnApprovisionnement;
+	private JComboBox comboBox;
 
-	TextArea textConsole;
+	private TextArea textConsole;
 
 	public InterfaceUtilisateur() {
 		JFrame frame = new JFrame("Confiturerie");
